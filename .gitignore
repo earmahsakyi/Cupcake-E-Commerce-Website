@@ -1,0 +1,6 @@
+.env
+env/
+env
+.cupcake_schema_erd.html
+/node_modules
+node_modules
