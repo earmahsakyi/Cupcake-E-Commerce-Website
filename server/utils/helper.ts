@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 export const generateOrderReference = (): string => {
     const date = new Date();
     const datePart = date.getFullYear().toString() +
@@ -12,3 +14,11 @@ export const pesewasToCedis = (pesewa: number):string => {
 
     return `GH₵ ${(pesewa / 100).toFixed(2)}`;
 };
+
+export const generateResetToken = async () => {
+    const resetToken = crypto.randomBytes(3).toString('hex').toUpperCase();
+    const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+
+    return { resetToken, hashedToken}
+} ;
+

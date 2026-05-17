@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { createOrder, getAllOrders, getOrderById } from "../controllers/orderController.js";
 import { validateBody } from "../middleware/validate.js";
+import { protect } from "../middleware/authMiddleware.js";
 
 const router = Router();
 
@@ -10,7 +11,7 @@ router.post(
     createOrder
     );
 
-router.get('/', getAllOrders);
+router.get('/', protect, getAllOrders);
 router.get('/:id', getOrderById);
 
 export default router;

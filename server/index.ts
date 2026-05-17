@@ -1,11 +1,16 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import helmet from 'helmet';
+import { getClientIp } from './middleware/getClientIp.js';
+import { apiLimiter } from './middleware/rateLimiter.js';
+import cookieParser from 'cookie-parser';
 import { testMySQLConnection, connectMongoDB } from './config/index.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import productRouter from './routes/productRoutes.js';
 import orderRouter from './routes/orderRoutes.js';
 import webhookRouter from './routes/webhookRoutes.js';
+import authRouter from './routes/authRoutes.js';
 
 dotenv.config(); 
 
@@ -13,7 +18,14 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+app.use(cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true
+}));
+app.use(cookieParser());
+app.use(helmet());
+app.use(getClientIp);
+app.use('/api/',apiLimiter);
 app.use('/api/webhook',express.raw({type: 'application/json'}));
 app.use(express.json());
 
@@ -27,6 +39,7 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/products',productRouter);
 app.use('/api/orders',orderRouter);
 app.use('/api/webhook', webhookRouter);
+app.use('/api/auth', authRouter);
 
 app.use(errorHandler)
 
