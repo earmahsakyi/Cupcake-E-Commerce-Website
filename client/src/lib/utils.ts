@@ -1,6 +1,24 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import axios from "axios";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+
+//helper to extract error messages
+export const getErrorMessage = (error :unknown): string => {
+    if (axios.isAxiosError(error)){
+        const axiosError = error 
+        return (
+            axiosError.response?.data?.msg ||
+            axiosError.response?.data?.error ||
+            axiosError.response?.data?.Error ||
+            axiosError.response?.data?.message ||
+            axiosError.response?.data?.errors?.[0]?.msg ||
+            'An error occurred'
+        )
+    }
+    return 'An unexpected error occurred';
+};
