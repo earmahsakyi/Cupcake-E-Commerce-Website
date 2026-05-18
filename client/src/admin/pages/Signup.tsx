@@ -11,7 +11,7 @@ import { passwordChecks } from "@/lib/utils";
 const Signup = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { status, error } = useAppSelector((state) => state.adminAuth);
+  const { isRegistering, error } = useAppSelector((state) => state.adminAuth);
   const [form, setForm] = useState({ name: "", email: "", password: "",password2:"", secretKey: "" });
   const [showPassword, setShowPassword] = useState(false);
   
@@ -103,10 +103,10 @@ const Signup = () => {
         {error && <p className="rounded-xl bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</p>}
         <button
           type="submit"
-          disabled={status === 'loading'}
+          disabled={isRegistering}
           className="inline-flex h-12 w-full items-center justify-center rounded-full bg-gradient-primary font-semibold text-primary-foreground shadow-soft disabled:opacity-70"
         >
-          {status === 'loading' ? "Creating…" : "Create account"}
+          {isRegistering ? "Creating…" : "Create account"}
         </button>
       </form>
     </AuthShell>

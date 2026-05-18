@@ -9,14 +9,13 @@ import axios from "axios";
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { status, error} = useAppSelector((state) => state.adminAuth);
+  const { isLoggingIn, error} = useAppSelector((state) => state.adminAuth);
   
   useEffect(()=> {
     if(error) {
       dispatch(clearError())
     }
   },[error,dispatch])
-
 
 
   const [email, setEmail] = useState("");
@@ -92,10 +91,10 @@ const Login = () => {
         </div>
         <button
           type="submit"
-          disabled={status === "loading"}
+          disabled={isLoggingIn}
           className="inline-flex h-12 w-full items-center justify-center rounded-full bg-gradient-primary font-semibold text-primary-foreground shadow-soft disabled:opacity-70"
         >
-          {status === "loading" ? "Signing in…" : "Sign in"}
+          {isLoggingIn ? "Signing in…" : "Sign in"}
         </button>
       </form>
     </AuthShell>

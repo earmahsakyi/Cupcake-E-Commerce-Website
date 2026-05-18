@@ -16,7 +16,7 @@ const ResetPassword = () => {
   const [confirm, setConfirm] = useState("");
    const dispatch = useAppDispatch();
    const [showPassword, setShowPassword] = useState(false);
-  const { status, error} = useAppSelector((state) => state.adminAuth);
+  const { isResettingPassword, error} = useAppSelector((state) => state.adminAuth);
 
     useEffect(()=> {
     if(error) {
@@ -89,11 +89,11 @@ const ResetPassword = () => {
         </Field>
         {error && <p className="rounded-xl bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</p>}
         <button
-        disabled={status==='loading'}
+        disabled={isResettingPassword}
           type="submit"
           className="inline-flex h-12 w-full items-center justify-center rounded-full bg-gradient-primary font-semibold text-primary-foreground shadow-soft"
         >
-          {status === 'loading' ? 'Resetting...' : 'Reset password'}
+          {isResettingPassword ? 'Resetting...' : 'Reset password'}
         </button>
       </form>
     </AuthShell>

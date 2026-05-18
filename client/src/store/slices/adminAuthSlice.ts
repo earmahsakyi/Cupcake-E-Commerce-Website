@@ -142,7 +142,13 @@ interface AdminAuthState {
     admin: AdminUser | null; 
     isAuthenticated: boolean;
     isCheckingAuth: boolean;
-    status: 'idle' | 'loading' | 'succeeded' | 'failed';
+    isLoggingIn: boolean;
+    isRegistering: boolean;
+    isLoggingOut: boolean;
+    isSendingOTP: boolean;
+    isUnlocking: boolean;
+    isSendingReset: boolean;
+    isResettingPassword: boolean;
     message: string | null;
     error: string | null;
 };
@@ -151,7 +157,13 @@ const initialState: AdminAuthState = {
     admin: null,
     isAuthenticated: false,
     isCheckingAuth: true, 
-    status: 'idle',
+    isLoggingIn: false,
+    isRegistering: false,
+    isLoggingOut: false,
+    isSendingOTP: false,
+    isUnlocking: false,
+    isSendingReset: false,
+    isResettingPassword: false,
     message: null,
     error: null
 };
@@ -171,11 +183,11 @@ const adminAuthSlice = createSlice({
         builder
         //login
         .addCase(loginAdmin.pending, (state) => {
-            state.status = 'loading';
+            state.isLoggingIn= true;
             state.error = null;
         })
         .addCase(loginAdmin.fulfilled, (state, action) => {
-            state.status = 'succeeded';
+            state.isLoggingIn= false;
             state.isAuthenticated = true;
             state.isCheckingAuth = false;
             state.admin = {
@@ -185,17 +197,17 @@ const adminAuthSlice = createSlice({
             };
         })
         .addCase(loginAdmin.rejected, (state, action) => {
-        state.status = "failed";
+        state.isLoggingIn= false;
         state.error = action.payload as string;
       })
 
       // register
       .addCase(registerAdmin.pending, (state) => {
-        state.status = "loading";
+        state.isRegistering = true;
         state.error = null;
       })
       .addCase(registerAdmin.fulfilled, (state, action) => {
-        state.status = "succeeded";
+        state.isRegistering = false;
         state.isAuthenticated = true;
         state.isCheckingAuth = false;
         state.admin = {
@@ -205,23 +217,23 @@ const adminAuthSlice = createSlice({
         };
       })
       .addCase(registerAdmin.rejected, (state, action) => {
-        state.status = "failed";
+        state.isRegistering = false;
         state.error = action.payload as string;
       })
 
       // loadAdmin
       .addCase(loadAdmin.pending, (state) => {
-        state.status = "loading";
+        state.isCheckingAuth = true;
         state.error = null;
       })
       .addCase(loadAdmin.fulfilled, (state, action) => {
-        state.status = "succeeded";
+
         state.isCheckingAuth = false;
         state.isAuthenticated = true;
         state.admin = action.payload;
       })
       .addCase(loadAdmin.rejected, (state) => {
-        state.status = "failed";
+  
         state.isAuthenticated = false;
         state.isCheckingAuth = false;
         state.admin = null;
@@ -229,12 +241,12 @@ const adminAuthSlice = createSlice({
 
       // logout
       .addCase(logoutAdmin.pending, (state) => {
-        state.status = 'loading';
+        state.isLoggingOut = true;
       })
       .addCase(logoutAdmin.fulfilled, (state) => {
         state.isAuthenticated = false;
         state.admin = null;
-        state.status = "idle";
+        state.isLoggingOut = false;
         state.error = null;
         state.message = null;
       })
@@ -242,67 +254,67 @@ const adminAuthSlice = createSlice({
       
       state.isAuthenticated = false;
       state.admin = null;
-      state.status = "idle";
+      state.isLoggingOut = false;
       state.isCheckingAuth = false;
     })
 
       // forgotPassword
       .addCase(forgotPassword.pending, (state) => {
-        state.status = "loading";
+        state.isSendingReset = true;
         state.error = null;
         state.message = null;
       })
       .addCase(forgotPassword.fulfilled, (state, action) => {
-        state.status = "succeeded";
+        state.isSendingReset = false;
         state.message = action.payload.message;
       })
       .addCase(forgotPassword.rejected, (state, action) => {
-        state.status = "failed";
+        state.isSendingReset = false;
         state.error = action.payload as string;
       })
 
       // resetPassword
       .addCase(resetPassword.pending, (state) => {
-        state.status = "loading";
+        state.isResettingPassword = true;
         state.error = null;
         state.message = null;
       })
       .addCase(resetPassword.fulfilled, (state, action) => {
-        state.status = "succeeded";
+        state.isResettingPassword = false;
         state.message = action.payload;
       })
       .addCase(resetPassword.rejected, (state, action) => {
-        state.status = "failed";
+        state.isResettingPassword = false;
         state.error = action.payload as string;
       })
 
       // requestOTP
       .addCase(requestOTP.pending, (state) => {
-        state.status = "loading";
+        state.isSendingOTP = true;
         state.error = null;
         state.message = null;
       })
       .addCase(requestOTP.fulfilled, (state, action) => {
-        state.status = "succeeded";
+        state.isSendingOTP = false;
         state.message = action.payload.message;
       })
       .addCase(requestOTP.rejected, (state, action) => {
-        state.status = "failed";
+        state.isSendingOTP = false;
         state.error = action.payload as string;
       })
 
       // unlockAccount
       .addCase(unlockAccount.pending, (state) => {
-        state.status = "loading";
+        state.isUnlocking = true;
         state.error = null;
         state.message = null;
       })
       .addCase(unlockAccount.fulfilled, (state, action) => {
-        state.status = "succeeded";
+        state.isUnlocking = false;
         state.message = action.payload;
       })
       .addCase(unlockAccount.rejected, (state, action) => {
-        state.status = "failed";
+        state.isUnlocking = false;
         state.error = action.payload as string;
       });
     }

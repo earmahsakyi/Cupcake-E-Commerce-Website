@@ -10,7 +10,7 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { status, error} = useAppSelector((state) => state.adminAuth);
+  const { isSendingReset, error} = useAppSelector((state) => state.adminAuth);
 
     useEffect(()=> {
     if(error) {
@@ -50,11 +50,11 @@ const ForgotPassword = () => {
         </label>
         {error && <p className="rounded-xl bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</p>}
         <button
-          disabled={status === 'loading'}
+          disabled={isSendingReset}
           type="submit"
           className="inline-flex h-12 w-full items-center justify-center rounded-full bg-gradient-primary font-semibold text-primary-foreground shadow-soft"
         >
-         {status === 'loading' ? 'Sending...' : 'Send Verification Code'}
+         {isSendingReset ? 'Sending...' : 'Send Verification Code'}
         </button>
       </form>
     </AuthShell>

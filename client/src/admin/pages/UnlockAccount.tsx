@@ -11,7 +11,7 @@ const UnlockAccount = () => {
   const [otp, setOtp] = useState("");
   const [secretKey, setSecretKey] = useState("");
   const dispatch = useAppDispatch();
-  const { status, error} = useAppSelector((state) => state.adminAuth);
+  const { isSendingOTP,isUnlocking, error} = useAppSelector((state) => state.adminAuth);
 
     useEffect(()=> {
     if(error) {
@@ -64,7 +64,7 @@ const UnlockAccount = () => {
           <div className="flex gap-2">
             <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="input-base" />
             <button type="button" onClick={handleSendOTP} className="rounded-2xl border border-border px-3 text-xs font-semibold text-foreground hover:bg-secondary">
-              Send OTP
+              {isSendingOTP ? <><span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" /> Signing out…</> : 'Send OTP'}
             </button>
           </div>
         </Field>
@@ -76,11 +76,11 @@ const UnlockAccount = () => {
         </Field>
         {error && <p className="rounded-xl bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</p>}
         <button
-          disabled = {status ==='loading'}
+          disabled = {isUnlocking}
           type="submit"
           className="inline-flex h-12 w-full items-center justify-center rounded-full bg-gradient-primary font-semibold text-primary-foreground shadow-soft"
         >
-          {status === 'loading' ? 'Unlocking...' : 'Unlock Acoount'}
+          {isUnlocking ? 'Unlocking...' : 'Unlock Acoount'}
         </button>
       </form>
     </AuthShell>
