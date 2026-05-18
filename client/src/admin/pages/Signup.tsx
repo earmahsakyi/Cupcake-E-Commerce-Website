@@ -1,9 +1,9 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthShell from "@/admin/AuthShell";
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/store/index";
-import { registerAdmin, loadAdmin } from "@/store/slices/adminAuthSlice";
+import { registerAdmin, loadAdmin, clearError } from "@/store/slices/adminAuthSlice";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { passwordChecks } from "@/lib/utils";
 
@@ -14,6 +14,12 @@ const Signup = () => {
   const { status, error } = useAppSelector((state) => state.adminAuth);
   const [form, setForm] = useState({ name: "", email: "", password: "",password2:"", secretKey: "" });
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(()=> {
+    if(error) {
+      dispatch(clearError())
+    }
+  },[error,dispatch])
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
