@@ -83,7 +83,7 @@ const UnlockAccount = () => {
           <div className="flex gap-2">
             <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="input-base" />
             <button type="button" disabled={isSendingOTP || cooldown > 0} onClick={handleSendOTP} className="rounded-2xl border border-border px-3 text-xs font-semibold text-foreground hover:bg-secondary">
-              {isSendingOTP ? <><span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" /></> 
+              {isSendingOTP ? 'Sending...' 
               : 
               cooldown > 0 
               ? `Resend in ${cooldown}s` 
