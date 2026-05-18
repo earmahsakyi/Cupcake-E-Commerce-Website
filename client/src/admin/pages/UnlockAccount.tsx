@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthShell from "@/admin/AuthShell";
 import { useAppDispatch, useAppSelector } from "@/store/index";
@@ -12,12 +12,20 @@ const UnlockAccount = () => {
   const [secretKey, setSecretKey] = useState("");
   const dispatch = useAppDispatch();
   const { isSendingOTP,isUnlocking, error} = useAppSelector((state) => state.adminAuth);
+  const [cooldown, setCooldown] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     useEffect(()=> {
     if(error) {
       dispatch(clearError())
     }
   },[error,dispatch])
+
+  useEffect(() => {
+  return () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+  };
+}, []);
 
   const handleSendOTP = async () => {
     if(!email) {
@@ -26,6 +34,17 @@ const UnlockAccount = () => {
     try { 
       const result = await dispatch(requestOTP(email)).unwrap();
       toast.success(result.message);
+      
+      setCooldown(120);
+     timerRef.current = setInterval(() => {
+      setCooldown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current!);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
 
     } catch (err) {
       console.error('Failed to send OTP')
