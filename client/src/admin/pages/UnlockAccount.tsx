@@ -30,6 +30,7 @@ const UnlockAccount = () => {
   const handleSendOTP = async () => {
     if(!email) {
       toast.error('Email is required!')
+      return;
     }
     try { 
       const result = await dispatch(requestOTP(email)).unwrap();
