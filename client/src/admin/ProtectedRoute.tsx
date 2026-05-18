@@ -6,7 +6,7 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
 
     (state) => state.adminAuth
   );
-  console.log(isAuthenticated)
+  
   const location = useLocation();
 
   if (isCheckingAuth)

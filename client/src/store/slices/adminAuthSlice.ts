@@ -227,6 +227,9 @@ const adminAuthSlice = createSlice({
       })
 
       // logout
+      .addCase(logoutAdmin.pending, (state) => {
+        state.status = 'loading';
+      })
       .addCase(logoutAdmin.fulfilled, (state) => {
         state.isAuthenticated = false;
         state.admin = null;
@@ -234,6 +237,13 @@ const adminAuthSlice = createSlice({
         state.error = null;
         state.message = null;
       })
+      .addCase(logoutAdmin.rejected, (state) => {
+      
+      state.isAuthenticated = false;
+      state.admin = null;
+      state.status = "idle";
+      state.isCheckingAuth = false;
+    })
 
       // forgotPassword
       .addCase(forgotPassword.pending, (state) => {

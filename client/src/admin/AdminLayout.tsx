@@ -17,7 +17,7 @@ const nav = [
 ];
 
 const AdminLayout = ({ children }: { children: ReactNode }) => {
-  const admin = useAppSelector((state) => state.adminAuth.admin);
+  const { admin, status } = useAppSelector((state) => state.adminAuth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -74,8 +74,11 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
             onClick={logout}
             className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
           >
-            <LogOut className="h-4 w-4" /> Sign out
-          </button>
+           {status === 'loading' 
+                ? <><span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" /> Signing out…</>
+                : <><LogOut className="h-4 w-4" /> Sign out</>
+              }
+            </button>
         </div>
       </aside>
 
