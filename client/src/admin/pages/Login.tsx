@@ -1,4 +1,4 @@
-import { FormEvent, useState, useEffect } from "react";
+import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthShell from "@/admin/AuthShell";
 import { toast } from "sonner";
@@ -9,14 +9,10 @@ import axios from "axios";
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { status, error, admin, isAuthenticated } = useAppSelector((state) => state.adminAuth);
-  console.log(admin)
+  const { status, error, admin} = useAppSelector((state) => state.adminAuth);
+  
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/admin", { replace: true });
-    }
-  }, [isAuthenticated, navigate]);
+
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

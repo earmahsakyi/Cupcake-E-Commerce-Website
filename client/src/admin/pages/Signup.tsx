@@ -30,7 +30,8 @@ const Signup = () => {
     e.preventDefault();
     
     if(form.password !== form.password2){
-      toast.error('Password do not match!')
+      toast.error('Password do not match!');
+      return;
     };
     const {password2, ...registerData} = form; 
     try {
