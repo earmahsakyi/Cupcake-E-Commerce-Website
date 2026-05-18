@@ -24,6 +24,7 @@ interface ResetPasswordData {
 interface UnlockData {
     email: string;
     OTP: string;
+    secretKey: string;
 }
 
 

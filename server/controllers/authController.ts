@@ -358,6 +358,10 @@ export const unlockUser = asyncHandler(
             throw new AppError('Invalid or expired OTP code',400);
 
         };
+
+        if (existingAdmin.lockLevel < 3) {
+            throw new AppError('Account not locked manually so wait...',400)
+        }
         
         const wasLocked = existingAdmin.lockedManually || (existingAdmin.lockUntil && existingAdmin.lockUntil > new Date());
 

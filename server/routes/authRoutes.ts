@@ -18,6 +18,6 @@ router.get('/me', protect, getLoginUser);
 router.post('/forgot-password', passwordResetLimiter, validateBody(['email']), forgotPassword);
 router.post('/reset-password', passwordResetLimiter, validateBody(['email', 'token', 'newPassword']), resetPassword);
 router.post('/request-otp', passwordResetLimiter, validateBody(['email']), requestOTP);
-router.post('/unlock', passwordResetLimiter, validateBody(['email', 'OTP']), unlockUser);
+router.post('/unlock', passwordResetLimiter, checkKey, validateBody(['email', 'OTP', 'secretKey']), unlockUser);
 
 export default router;
