@@ -176,6 +176,7 @@ const adminAuthSlice = createSlice({
         .addCase(loginAdmin.fulfilled, (state, action) => {
             state.status = 'succeeded';
             state.isAuthenticated = true;
+            state.isCheckingAuth = false;
             state.admin = {
                 name: action.payload.name,
                 email: '',
@@ -195,6 +196,7 @@ const adminAuthSlice = createSlice({
       .addCase(registerAdmin.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.isAuthenticated = true;
+        state.isCheckingAuth = false;
         state.admin = {
           name: action.payload.name,
           email: "",
