@@ -61,7 +61,7 @@ const ResetPassword = () => {
           <input required value={otp} onChange={(e) => setOtp(e.target.value)} maxLength={6} className="input-base tracking-widest" placeholder="6-digit code" />
         </Field>
         <Field label="New password">
-          <div>
+          <div className="relative">
             <input type={showPassword ? 'text' : 'password'} required value={pw} onChange={(e) => setPw(e.target.value)} className="input-base" />
             <button type='button' className="absolute inset-y-0 right-0 pr-3 flex items-center"
             onClick={()=> setShowPassword(!showPassword)}>
