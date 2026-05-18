@@ -9,7 +9,8 @@ import axios from "axios";
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { status, error } = useAppSelector((state) => state.adminAuth);
+  const { status, error, admin } = useAppSelector((state) => state.adminAuth);
+  console.log(admin)
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

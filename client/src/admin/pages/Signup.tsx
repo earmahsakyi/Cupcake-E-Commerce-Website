@@ -14,6 +14,8 @@ const Signup = () => {
   const { status, error } = useAppSelector((state) => state.adminAuth);
   const [form, setForm] = useState({ name: "", email: "", password: "",password2:"", secretKey: "" });
   const [showPassword, setShowPassword] = useState(false);
+  
+
 
   useEffect(()=> {
     if(error) {

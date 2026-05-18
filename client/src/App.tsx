@@ -60,7 +60,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
       <AppInit/>
-        <AuthProvider>
+       
           <CartProvider>
             <Routes>
               <Route path="/" element={<Index />} />
@@ -91,7 +91,6 @@ const App = () => (
             </Routes>
             <StorefrontExtras />
           </CartProvider>
-        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

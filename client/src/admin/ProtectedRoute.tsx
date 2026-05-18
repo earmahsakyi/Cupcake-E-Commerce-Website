@@ -3,8 +3,10 @@ import { useAppSelector } from "@/store/index";
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const { isAuthenticated, isCheckingAuth } = useAppSelector(
+
     (state) => state.adminAuth
   );
+  console.log(isAuthenticated)
   const location = useLocation();
 
   if (isCheckingAuth)
