@@ -1,38 +1,49 @@
 import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthShell from "@/admin/AuthShell";
-import { ADMIN_SECRET_KEY, auth } from "@/admin/store";
 import { toast } from "sonner";
+import { useAppDispatch, useAppSelector } from "@/store/index";
+import { registerAdmin, loadAdmin } from "@/store/slices/adminAuthSlice";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { passwordChecks } from "@/lib/utils";
+
 
 const Signup = () => {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: "", email: "", password: "", secret: "" });
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
+  const { status, error } = useAppSelector((state) => state.adminAuth);
+  const [form, setForm] = useState({ name: "", email: "", password: "",password2:"", secretKey: "" });
+  const [showPassword, setShowPassword] = useState(false);
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
-  const submit = (e: FormEvent) => {
+  const submit =async  (e: FormEvent) => {
     e.preventDefault();
-    setError("");
-    if (!form.name.trim() || !form.email.trim()) return setError("All fields are required.");
-    setLoading(true);
+    
+    if(form.password !== form.password2){
+      toast.error('Password do not match!')
+    };
+    const {password2, ...registerData} = form; 
     try {
-      auth.signup(form.name.trim(), form.email.trim(), form.password, form.secret.trim());
-      toast.success("Account created! Welcome.");
+      const result = await dispatch(registerAdmin(registerData)).unwrap();
+
+      await dispatch(loadAdmin());
+      toast.success(`Welcome back, ${result.name.split(" ")[0]}!`);
       navigate("/admin");
-    } catch (err: any) {
-      setError(err.message || "Signup failed");
-    } finally {
-      setLoading(false);
+    } catch (err) {
+        console.error('Failed to register Admin',err)
     }
+
+
+
+
   };
 
   return (
     <AuthShell
       title="Create admin account"
-      subtitle={`Requires the admin secret key. (Demo key: ${ADMIN_SECRET_KEY})`}
+      subtitle={`Requires the admin secret key`}
       footer={
         <>
           Already have an account?{" "}
@@ -50,18 +61,43 @@ const Signup = () => {
           <input type="email" required value={form.email} onChange={set("email")} className="input-base" placeholder="you@bakery.com" />
         </Field>
         <Field label="Password">
-          <input type="password" required value={form.password} onChange={set("password")} className="input-base" placeholder="At least 6 characters" />
+          <div className="relative">
+            <input type={showPassword ? 'text' : 'password'} required value={form.password} onChange={set("password")} className="input-base" placeholder="At least 8 characters" min={8} />
+            <button type='button' className="absolute inset-y-0 right-0 pr-3 flex items-center"
+            onClick={()=> setShowPassword(!showPassword)}
+            >
+                {showPassword ? <FaEyeSlash/> : <FaEye/>}
+            </button>
+         </div>
+         <ul className="mt-3 space-y-1 text-sm">
+              {
+                passwordChecks.map((check, index) => {
+                  const passed = check.test(form.password);
+                  return (
+                    <li key={index} className={` flex items-center gap-2
+                      ${passed ? 'text-green-600' : 'text-red-500'}
+                    `}>
+                      <span>{passed ? '✓' : '✗'}</span>
+                      <span>{check.label}</span>
+                    </li>
+                  )
+                })
+              }
+            </ul>
+        </Field>
+        <Field label="Confirm Password">
+            <input type={showPassword ? 'text' : 'password'} required value={form.password2} onChange={set("password2")} className="input-base" placeholder="At least 8 characters" min={8} />
         </Field>
         <Field label="Admin secret key">
-          <input required value={form.secret} onChange={set("secret")} className="input-base" placeholder="Provided by company owner" />
+          <input required value={form.secretKey} onChange={set("secretKey")} className="input-base" placeholder="Provided by company owner" />
         </Field>
         {error && <p className="rounded-xl bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</p>}
         <button
           type="submit"
-          disabled={loading}
+          disabled={status === 'loading'}
           className="inline-flex h-12 w-full items-center justify-center rounded-full bg-gradient-primary font-semibold text-primary-foreground shadow-soft disabled:opacity-70"
         >
-          {loading ? "Creating…" : "Create account"}
+          {status === 'loading' ? "Creating…" : "Create account"}
         </button>
       </form>
     </AuthShell>

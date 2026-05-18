@@ -1,10 +1,22 @@
 import { Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "./AuthContext";
+import { useAppSelector } from "@/store/index";
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-  const { session } = useAuth();
+  const { isAuthenticated, isCheckingAuth } = useAppSelector(
+    (state) => state.adminAuth
+  );
   const location = useLocation();
-  if (!session) return <Navigate to="/admin/login" replace state={{ from: location }} />;
+
+  if (isCheckingAuth)
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-pink-500 border-t-transparent" />
+      </div>
+    );
+
+  if (!isAuthenticated)
+    return <Navigate to="/admin/login" replace state={{ from: location }} />;
+
   return children;
 };
 

@@ -22,3 +22,26 @@ export const getErrorMessage = (error :unknown): string => {
     }
     return 'An unexpected error occurred';
 };
+
+export const passwordChecks = [
+  {
+    label: "At least 8 characters",
+    test: (password: string) => password.length >= 8,
+  },
+  {
+    label: "Contains an uppercase letter",
+    test: (password: string) => /[A-Z]/.test(password),
+  },
+  {
+    label: "Contains a lowercase letter",
+    test: (password: string) => /[a-z]/.test(password),
+  },
+  {
+    label: "Contains a number",
+    test: (password: string) => /\d/.test(password),
+  },
+  {
+    label: "Contains a special character",
+    test: (password: string) => /[\W_]/.test(password),
+  },
+];

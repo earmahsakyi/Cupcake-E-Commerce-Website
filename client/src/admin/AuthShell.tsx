@@ -20,7 +20,7 @@ const AuthShell = ({
           <span className="grid h-10 w-10 place-items-center rounded-full bg-gradient-primary text-primary-foreground shadow-soft">
             <Cake className="h-5 w-5" />
           </span>
-          <span className="font-serif text-2xl font-semibold text-foreground">Sweet Crumbs</span>
+          <span className="font-serif text-2xl font-semibold text-foreground">Cup O' Cake</span>
         </Link>
         <div className="rounded-3xl bg-card p-7 shadow-card sm:p-9">
           <h1 className="font-serif text-2xl text-foreground">{title}</h1>

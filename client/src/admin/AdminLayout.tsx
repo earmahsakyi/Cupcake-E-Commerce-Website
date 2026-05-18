@@ -4,8 +4,8 @@ import {
   Cake, LayoutDashboard, ShoppingBag, Package, Truck, CreditCard,
   MessageSquare, LogOut, Menu, X,
 } from "lucide-react";
-import { useAuth } from "./AuthContext";
-import { auth } from "./store";
+import { useAppDispatch, useAppSelector } from "@/store/index";
+import { logoutAdmin } from "@/store/slices/adminAuthSlice";
 
 const nav = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, end: true },
@@ -17,23 +17,22 @@ const nav = [
 ];
 
 const AdminLayout = ({ children }: { children: ReactNode }) => {
-  const { session } = useAuth();
+  const admin = useAppSelector((state) => state.adminAuth.admin);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
-  const logout = () => {
-    auth.logout();
+  const logout = async () => {
+    await dispatch(logoutAdmin());
     navigate("/admin/login");
   };
 
   return (
     <div className="min-h-screen bg-secondary/30">
-      {/* Mobile overlay */}
       {open && (
         <div className="fixed inset-0 z-30 bg-foreground/40 lg:hidden" onClick={() => setOpen(false)} />
       )}
 
-      {/* Sidebar */}
       <aside
         className={`fixed inset-y-0 left-0 z-40 w-64 transform bg-card border-r border-border transition-transform lg:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
@@ -80,23 +79,24 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
         </div>
       </aside>
 
-      {/* Main */}
       <div className="lg:pl-64">
         <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-border bg-card/80 px-4 backdrop-blur sm:px-6">
           <button className="lg:hidden" onClick={() => setOpen(true)} aria-label="Open menu">
             <Menu className="h-6 w-6 text-foreground" />
           </button>
           <div className="hidden lg:block">
-            <p className="text-xs text-muted-foreground">Sweet Crumbs Admin</p>
-            <p className="font-serif text-lg text-foreground">Welcome back, {session?.name?.split(" ")[0] ?? "Admin"}</p>
+            <p className="text-xs text-muted-foreground">Cup O' Cake Admin</p>
+            <p className="font-serif text-lg text-foreground">
+              Welcome back, {admin?.name?.split(" ")[0] ?? "Admin"}
+            </p>
           </div>
           <div className="flex items-center gap-3">
             <div className="text-right hidden sm:block">
-              <p className="text-sm font-semibold text-foreground">{session?.name}</p>
-              <p className="text-xs text-muted-foreground">{session?.email}</p>
+              <p className="text-sm font-semibold text-foreground">{admin?.name}</p>
+              <p className="text-xs text-muted-foreground">{admin?.email}</p>
             </div>
             <div className="grid h-9 w-9 place-items-center rounded-full bg-gradient-primary text-primary-foreground font-semibold">
-              {(session?.name?.[0] ?? "A").toUpperCase()}
+              {(admin?.name?.[0] ?? "A").toUpperCase()}
             </div>
           </div>
         </header>

@@ -1,32 +1,35 @@
 import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthShell from "@/admin/AuthShell";
-import { auth } from "@/admin/store";
 import { toast } from "sonner";
+import { useAppDispatch, useAppSelector } from "@/store/index";
+import { loginAdmin, loadAdmin } from "@/store/slices/adminAuthSlice";
+import axios from "axios";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { status, error } = useAppSelector((state) => state.adminAuth);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const submit = (e: FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
-    setError("");
-    setLoading(true);
+
     try {
-      auth.login(email.trim(), password);
-      toast.success("Welcome back!");
+      const result = await dispatch(
+        loginAdmin({ email: email.trim(), password })
+      ).unwrap();
+
+      await dispatch(loadAdmin());
+      toast.success(`Welcome back, ${result.name.split(" ")[0]}!`);
       navigate("/admin");
-    } catch (err: any) {
-      if (err.code === "LOCKED") {
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.status === 423) {
         navigate(`/admin/locked?email=${encodeURIComponent(email)}`);
         return;
       }
-      setError(err.message || "Login failed");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -51,7 +54,7 @@ const Login = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="input-base"
-            placeholder="admin@sweetcrumbs.gh"
+            placeholder="admin@cupcake.gh"
             autoComplete="email"
           />
         </Field>
@@ -66,7 +69,11 @@ const Login = () => {
             autoComplete="current-password"
           />
         </Field>
-        {error && <p className="rounded-xl bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</p>}
+        {error && (
+          <p className="rounded-xl bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            {error}
+          </p>
+        )}
         <div className="flex items-center justify-between text-sm">
           <Link to="/admin/forgot" className="text-primary hover:underline">
             Forgot password?
@@ -77,10 +84,10 @@ const Login = () => {
         </div>
         <button
           type="submit"
-          disabled={loading}
+          disabled={status === "loading"}
           className="inline-flex h-12 w-full items-center justify-center rounded-full bg-gradient-primary font-semibold text-primary-foreground shadow-soft disabled:opacity-70"
         >
-          {loading ? "Signing in…" : "Sign in"}
+          {status === "loading" ? "Signing in…" : "Sign in"}
         </button>
       </form>
     </AuthShell>
@@ -90,7 +97,7 @@ const Login = () => {
 const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
   <label className="block">
     <span className="mb-1.5 block text-sm font-semibold text-foreground">{label}</span>
-    {children}
+    {children} 
   </label>
 );
 

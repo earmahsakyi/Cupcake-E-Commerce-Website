@@ -12,6 +12,9 @@ import Cart from "./pages/Cart.tsx";
 import Checkout from "./pages/Checkout.tsx";
 import OrderSuccess from "./pages/OrderSuccess.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import { useEffect } from "react";
+import { useAppDispatch } from "@/store/index";
+import { loadAdmin } from "@/store/slices/adminAuthSlice";
 
 import { AuthProvider } from "@/admin/AuthContext";
 import ProtectedRoute from "@/admin/ProtectedRoute";
@@ -42,12 +45,21 @@ const StorefrontExtras = () => {
   );
 };
 
+const AppInit = () => {
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(loadAdmin());
+  }, [dispatch]);
+  return null;
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
       <BrowserRouter>
+      <AppInit/>
         <AuthProvider>
           <CartProvider>
             <Routes>
