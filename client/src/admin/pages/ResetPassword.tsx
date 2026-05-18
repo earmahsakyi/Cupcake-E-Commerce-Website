@@ -1,29 +1,46 @@
-import { FormEvent, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { FormEvent, useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import AuthShell from "@/admin/AuthShell";
-import { auth } from "@/admin/store";
 import { toast } from "sonner";
+import { useAppDispatch, useAppSelector } from "@/store/index";
+import { resetPassword, clearError } from "@/store/slices/adminAuthSlice";
+import { passwordChecks } from "@/lib/utils";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const ResetPassword = () => {
-  const [params] = useSearchParams();
   const navigate = useNavigate();
-  const [email, setEmail] = useState(params.get("email") ?? "");
+  const { state } = useLocation();
+  const [email, setEmail] = useState(state?.email ?? "");
   const [otp, setOtp] = useState("");
   const [pw, setPw] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [error, setError] = useState("");
+   const dispatch = useAppDispatch();
+   const [showPassword, setShowPassword] = useState(false);
+  const { status, error} = useAppSelector((state) => state.adminAuth);
 
-  const submit = (e: FormEvent) => {
-    e.preventDefault();
-    setError("");
-    if (pw !== confirm) return setError("Passwords do not match.");
-    try {
-      auth.resetPassword(email.trim(), otp.trim(), pw);
-      toast.success("Password reset successfully. Please sign in.");
-      navigate("/admin/login");
-    } catch (err: any) {
-      setError(err.message || "Reset failed");
+    useEffect(()=> {
+    if(error) {
+      dispatch(clearError())
     }
+  },[error,dispatch])
+
+
+  const submit =async(e: FormEvent) => {
+    e.preventDefault();
+    if(pw !== confirm) {
+      toast.error('Password do not match!');
+      return;
+    }
+    try {
+      const result = await dispatch(resetPassword({email, token:otp, newPassword:pw})).unwrap();
+       toast.success(result);
+      setTimeout(()=> {
+        navigate('/admin/login')
+      },1500)
+    } catch (err) {
+        console.error('failed to reset passowrd!')
+    }
+
   };
 
   return (
@@ -44,17 +61,39 @@ const ResetPassword = () => {
           <input required value={otp} onChange={(e) => setOtp(e.target.value)} maxLength={6} className="input-base tracking-widest" placeholder="6-digit code" />
         </Field>
         <Field label="New password">
-          <input type="password" required value={pw} onChange={(e) => setPw(e.target.value)} className="input-base" />
+          <div>
+            <input type={showPassword ? 'text' : 'password'} required value={pw} onChange={(e) => setPw(e.target.value)} className="input-base" />
+            <button type='button' className="absolute inset-y-0 right-0 pr-3 flex items-center"
+            onClick={()=> setShowPassword(!showPassword)}>
+               {showPassword ? <FaEyeSlash/> : <FaEye/>}
+            </button>
+          </div>
+          <ul className="mt-3 space-y-1 text-sm">
+              {
+                passwordChecks.map((check, index) => {
+                  const passed = check.test(pw);
+                  return (
+                    <li key={index} className={` flex items-center gap-2
+                      ${passed ? 'text-green-600' : 'text-red-500'}
+                    `}>
+                      <span>{passed ? '✓' : '✗'}</span>
+                      <span>{check.label}</span>
+                    </li>
+                  )
+                })
+              }
+            </ul>
         </Field>
         <Field label="Confirm password">
-          <input type="password" required value={confirm} onChange={(e) => setConfirm(e.target.value)} className="input-base" />
+          <input type={showPassword ? 'text' : 'password'} required value={confirm} onChange={(e) => setConfirm(e.target.value)} className="input-base" />
         </Field>
         {error && <p className="rounded-xl bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</p>}
         <button
+        disabled={status==='loading'}
           type="submit"
           className="inline-flex h-12 w-full items-center justify-center rounded-full bg-gradient-primary font-semibold text-primary-foreground shadow-soft"
         >
-          Reset password
+          {status === 'loading' ? 'Resetting...' : 'Reset password'}
         </button>
       </form>
     </AuthShell>

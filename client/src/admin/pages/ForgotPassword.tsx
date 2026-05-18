@@ -1,24 +1,36 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthShell from "@/admin/AuthShell";
-import { otpStore, usersStore } from "@/admin/store";
+import { useAppDispatch, useAppSelector } from "@/store/index";
+import { forgotPassword, clearError } from "@/store/slices/adminAuthSlice";
 import { toast } from "sonner";
 
 const ForgotPassword = () => {
-  const navigate = useNavigate();
+ 
   const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { status, error} = useAppSelector((state) => state.adminAuth);
 
-  const submit = (e: FormEvent) => {
-    e.preventDefault();
-    setError("");
-    if (!usersStore.byEmail(email)) {
-      setError("No account found with this email.");
-      return;
+    useEffect(()=> {
+    if(error) {
+      dispatch(clearError())
     }
-    const code = otpStore.generate(email);
-    toast.success(`OTP sent to ${email}`, { description: `Demo OTP: ${code}` });
-    navigate(`/admin/reset?email=${encodeURIComponent(email)}`);
+  },[error,dispatch])
+
+  
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      const result = await dispatch(forgotPassword(email)).unwrap()
+      toast.success(result.message);
+      setTimeout(()=> {
+        navigate('/admin/reset', { state: { email } })
+      },1500)
+    } catch(err) {
+      console.error('Failed to send Code!')
+    }
+
   };
 
   return (
@@ -38,10 +50,11 @@ const ForgotPassword = () => {
         </label>
         {error && <p className="rounded-xl bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</p>}
         <button
+          disabled={status === 'loading'}
           type="submit"
           className="inline-flex h-12 w-full items-center justify-center rounded-full bg-gradient-primary font-semibold text-primary-foreground shadow-soft"
         >
-          Send OTP
+         {status === 'loading' ? 'Sending...' : 'Send Verification Code'}
         </button>
       </form>
     </AuthShell>

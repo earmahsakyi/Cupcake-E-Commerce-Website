@@ -41,7 +41,7 @@ const Signup = () => {
       toast.success(`Welcome back, ${result.name.split(" ")[0]}!`);
       navigate("/admin");
     } catch (err) {
-        console.error('Failed to register Admin',err)
+        console.error('Failed to register Admin')
     }
 
 
@@ -98,7 +98,7 @@ const Signup = () => {
             <input type={showPassword ? 'text' : 'password'} required value={form.password2} onChange={set("password2")} className="input-base" placeholder="At least 8 characters" min={8} />
         </Field>
         <Field label="Admin secret key">
-          <input required value={form.secretKey} onChange={set("secretKey")} className="input-base" placeholder="Provided by company owner" />
+          <input type='password' required value={form.secretKey} onChange={set("secretKey")} className="input-base" placeholder="Provided by company owner" />
         </Field>
         {error && <p className="rounded-xl bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</p>}
         <button

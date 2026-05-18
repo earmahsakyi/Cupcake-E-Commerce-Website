@@ -1,9 +1,9 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthShell from "@/admin/AuthShell";
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/store/index";
-import { loginAdmin, loadAdmin } from "@/store/slices/adminAuthSlice";
+import { loginAdmin, loadAdmin, clearError } from "@/store/slices/adminAuthSlice";
 import axios from "axios";
 
 const Login = () => {
@@ -11,6 +11,11 @@ const Login = () => {
   const dispatch = useAppDispatch();
   const { status, error} = useAppSelector((state) => state.adminAuth);
   
+  useEffect(()=> {
+    if(error) {
+      dispatch(clearError())
+    }
+  },[error,dispatch])
 
 
 
