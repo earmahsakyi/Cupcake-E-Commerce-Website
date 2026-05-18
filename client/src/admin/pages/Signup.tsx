@@ -17,11 +17,11 @@ const Signup = () => {
   
 
 
-  useEffect(()=> {
-    if(error) {
-      dispatch(clearError())
-    }
-  },[error,dispatch])
+    useEffect(()=> {
+    
+    dispatch(clearError())
+    
+  },[dispatch])
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));

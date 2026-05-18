@@ -13,10 +13,10 @@ const ForgotPassword = () => {
   const { isSendingReset, error} = useAppSelector((state) => state.adminAuth);
 
     useEffect(()=> {
-    if(error) {
-      dispatch(clearError())
-    }
-  },[error,dispatch])
+    
+    dispatch(clearError())
+    
+  },[dispatch])
 
   
   const submit = async (e: FormEvent) => {

@@ -11,11 +11,11 @@ const Login = () => {
   const dispatch = useAppDispatch();
   const { isLoggingIn, error} = useAppSelector((state) => state.adminAuth);
   
-  useEffect(()=> {
-    if(error) {
-      dispatch(clearError())
-    }
-  },[error,dispatch])
+    useEffect(()=> {
+    
+    dispatch(clearError())
+    
+  },[dispatch])
 
 
   const [email, setEmail] = useState("");

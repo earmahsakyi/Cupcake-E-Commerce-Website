@@ -16,10 +16,10 @@ const UnlockAccount = () => {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     useEffect(()=> {
-    if(error) {
-      dispatch(clearError())
-    }
-  },[error,dispatch])
+    
+    dispatch(clearError())
+    
+  },[dispatch])
 
   useEffect(() => {
   return () => {
