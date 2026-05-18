@@ -4,6 +4,7 @@ import { asyncHandler } from "../middleware/asyncHandler.js";
 import crypto from 'crypto';
 import { AppError } from "../middleware/errorHandler.js";
 import { sendOrderConfirmationSMS } from "../utils/sms.js";
+import sendEmail from "../utils/sendEmail.js";
 
 export const webhook = asyncHandler(
     async(req: Request, res: Response) => {
@@ -59,7 +60,44 @@ export const webhook = asyncHandler(
         );
 
    
-        await sendOrderConfirmationSMS(order.customer_phone, amount, order.customer_name, reference)
+        await sendOrderConfirmationSMS(order.customer_phone, amount, order.customer_name, reference);
+
+        const html = `
+        <div style="font-family: Arial, sans-serif; background-color: #f9fafc; padding: 20px; border-radius: 10px; max-width: 650px; margin: auto; border: 1px solid #e5e7eb;">
+
+            <!-- Header -->
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h1 style="color: #FF3B30; margin-bottom: 5px;">
+                    🎂 New Order Received
+                </h1>
+
+                <p style="color: #666; font-size: 14px;">
+                    Cup O' Cake Admin Notification
+                </p>
+            </div>
+
+            <!-- Greeting -->
+            <p style="font-size: 16px; color: #333;">
+                Hello Sharon,
+            </p>
+
+            <p style="font-size: 16px; color: #333; line-height: 1.6;">
+                A customer has successfully completed a new order and payment on the website.
+            </p>
+
+            
+            <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e7eb;" />
+
+            <p style="font-size: 12px; color: #999; text-align: center;">
+                &copy; ${new Date().getFullYear()} Cup O' Cake. All rights reserved.
+            </p>
+            </div>
+        `
+        await sendEmail({
+            to: process.env.BASE_EMAIL as string,
+            subject: `New Order Received from ${order.customer_name}`,
+            html: html
+        });
 
         res.status(200).json({received: true})
             

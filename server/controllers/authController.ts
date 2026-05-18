@@ -319,7 +319,7 @@ export const requestOTP = asyncHandler(
             </p>
 
             <p style="font-size: 14px; color: #555;">
-                If you did not request a password reset, please ignore this email.  
+                If you did not request for an account unlock, please ignore this email.  
                 Your account will remain secure.
             </p>
 

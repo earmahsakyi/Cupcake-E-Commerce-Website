@@ -95,7 +95,7 @@ const UnlockAccount = () => {
           <input required value={otp} onChange={(e) => setOtp(e.target.value)} maxLength={6} className="input-base tracking-widest" placeholder="6-digit code" />
         </Field>
         <Field label="Admin secret key">
-          <input required value={secretKey} onChange={(e) => setSecretKey(e.target.value)} className="input-base" />
+          <input required type='password' value={secretKey} onChange={(e) => setSecretKey(e.target.value)} className="input-base" />
         </Field>
         {error && <p className="rounded-xl bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</p>}
         <button
