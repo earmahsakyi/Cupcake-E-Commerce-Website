@@ -210,7 +210,7 @@ const ProductDetail = () => {
               <motion.button
                 onClick={handleAdd}
                 whileTap={{ scale: 0.97 }}
-                className="group inline-flex h-14 flex-1 items-center justify-center gap-2 rounded-full bg-gradient-primary px-8 text-base font-semibold text-primary-foreground shadow-soft transition-transform hover:scale-[1.02]"
+                className="group inline-flex h-14 py-3 md:py-0 flex-1 items-center justify-center gap-2 rounded-full bg-gradient-primary px-8 text-base font-semibold text-primary-foreground shadow-soft transition-transform hover:scale-[1.02]"
               >
                 <AnimatePresence mode="wait" initial={false}>
                   {added ? (
@@ -221,7 +221,7 @@ const ProductDetail = () => {
                       exit={{ opacity: 0, y: -6 }}
                       className="inline-flex items-center gap-2"
                     >
-                      <Check className="h-5 w-5" /> Added!
+                      <Check className="h-7 w-7 md:h-5 md:w-5" /> Added!
                     </motion.span>
                   ) : (
                     <motion.span
@@ -231,7 +231,7 @@ const ProductDetail = () => {
                       exit={{ opacity: 0, y: -6 }}
                       className="inline-flex items-center gap-2"
                     >
-                      <ShoppingBag className="h-5 w-5" /> Add to Cart
+                      <ShoppingBag className="h-7 w-7 md:h-5 md:w-5" /> Add to Cart
                     </motion.span>
                   )}
                 </AnimatePresence>
