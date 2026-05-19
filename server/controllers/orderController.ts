@@ -157,36 +157,58 @@ export const createOrder = asyncHandler(
             );
 
             const data: any = await response.json();
+            console.log('FULL PAYSTACK RESPONSE:', JSON.stringify(data, null, 2));
 
             if (!data.status){
                 throw new AppError('Payment initialization failed',502)
 
             }
 
-            // Check the actual payment status
-                const paymentStatus = data.data?.status;
+                        // Debug: Log the full response
+            console.log('Paystack Response:', {
+                status: data.status,
+                message: data.message,
+                data_status: data.data?.status,
+                full_response: data
+            });
 
+            if (!data.status){
+                throw new AppError('Payment initialization failed', 502)
+            }
+
+            // Handle successful charge attempt (this is the key fix)
+            if (data.message === 'Charge attempted') {
+                console.log('✅ Payment charge attempted successfully');
+                console.log(`📱 Customer should approve on phone: ${customer_phone}`);
+                console.log(`📞 USSD code: ${paystackProvider === 'mtn' ? '*170#' : '*110#'}`);
+                // This is success - continue to save payment
+            } 
+            else {
+                // Check for other statuses
+                const paymentStatus = data.data?.status;
+                
                 if (paymentStatus === 'pay_offline') {
-                    // This is NORMAL for MTN/AirtelTigo - customer must approve via USSD
-                    // Just proceed - the webhook will confirm payment
-                    console.log('Payment requires offline USSD approval');
+                    console.log('Payment requires offline USSD approval - This is NORMAL');
                 } 
                 else if (paymentStatus === 'success') {
-                    // Immediate success (rare for mobile money)
                     console.log('Payment completed immediately');
                 }
                 else if (paymentStatus === 'pending') {
-                    // Still processing - check later via webhook
                     console.log('Payment pending');
                 }
-                else {
-                    throw new AppError(data.message || 'Payment initialization failed', 502);
+                else if (paymentStatus === 'send_pin') {
+                    console.log('PIN sent to customer');
                 }
+                else {
+                    // If we don't recognize the response, throw error
+                    throw new AppError(`Unexpected Paystack response: ${data.message || 'Unknown error'}`, 502);
+                }
+            }
 
             await connection.execute(
                 `INSERT INTO payments (order_id, paystack_reference, amount_pesewas, momo_network, phone, status)
                 VALUES (?, ?, ?, ?, ?, ?)`,
-                [orderId,reference,totalPesewas,momo_network,customer_phone,'pending']
+                [orderId,reference,totalPesewas,paystackProvider,customer_phone,'pending']
             )
 
 
