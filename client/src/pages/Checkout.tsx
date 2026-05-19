@@ -23,7 +23,7 @@ const Checkout = () => {
     address: "",
     deliveryDate: "",
     notes: "",
-    network: "mtn" as "mtn" | "telecel" | "vodafone" | "airteltigo",
+    network: "mtn" as "mtn" | "vod" | "tgo"
   });
 
   useEffect(() => {
@@ -210,9 +210,8 @@ const Checkout = () => {
                 required
               >
                 <option value="mtn">MTN Mobile Money</option>
-                <option value="telecel">Telecel Cash</option>
-                <option value="vodafone">Vodafone Cash</option>
-                <option value="airteltigo">AirtelTigo Money</option>
+                <option value="vod">Telecel Cash</option>
+                <option value="tgo">AirtelTigo Money</option>
               </select>
             </Field>
 

@@ -28,7 +28,7 @@ export interface PaymentRow {
     order_id: number;
     paystack_reference: string;
     amount_pesewas: number;
-    momo_network: 'mtn' | 'telecel' | 'vodafone' | 'airteltigo';
+    momo_network: 'mtn' | 'vod'  | 'tgo';
     phone: string;
     status: 'pending' | 'success' | 'failed';
     paid_at: Date | null;
@@ -73,7 +73,7 @@ export interface CreateOrderBody {
     customer_name: string;
     customer_phone: string;
     delivery_address: string;
-    momo_network: 'mtn' | 'telecel' | 'vodafone' | 'airteltigo';
+    momo_network: 'mtn' | 'tgo' | 'vod';
     items: CartItem[];
 }
 

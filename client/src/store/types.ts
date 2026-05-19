@@ -56,7 +56,7 @@ export interface CreateOrderPayload {
   customer_name: string;
   customer_phone: string;
   delivery_address: string;
-  momo_network: "mtn" | "telecel" | "vodafone" | "airteltigo";
+  momo_network: "mtn" | "vod" | "tgo";
   items: CartItemPayload[];
 }
 

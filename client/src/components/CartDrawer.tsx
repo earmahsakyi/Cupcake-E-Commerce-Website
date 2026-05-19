@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
-import { formatGHS } from "@/data/cakes";
+import { formatPesewas } from "@/lib/utils";
 
 const CartDrawer = () => {
   const { isOpen, closeCart, items, subtotal, setQuantity, removeItem } = useCart();
@@ -76,7 +76,7 @@ const CartDrawer = () => {
                             <div>
                               <p className="font-serif text-sm font-semibold text-foreground">{item.name}</p>
                               <p className="text-xs text-muted-foreground">
-                                {[item.size, item.flavor].filter(Boolean).join(" • ")}
+                                {[item.size, item.flavor_note].filter(Boolean).join(" • ")}
                               </p>
                             </div>
                             <button
@@ -106,7 +106,7 @@ const CartDrawer = () => {
                               </button>
                             </div>
                             <p className="text-sm font-semibold text-primary">
-                              {formatGHS(item.unitPrice * item.quantity)}
+                              {formatPesewas(item.unitPrice * item.quantity)}
                             </p>
                           </div>
                         </div>
@@ -122,7 +122,7 @@ const CartDrawer = () => {
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Subtotal</span>
                   <span className="font-serif text-xl font-semibold text-foreground">
-                    {formatGHS(subtotal)}
+                    {formatPesewas(subtotal)}
                   </span>
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground">Delivery fees calculated at checkout.</p>

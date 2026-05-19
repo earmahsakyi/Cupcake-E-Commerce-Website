@@ -5,6 +5,16 @@ import { AppError } from "../middleware/errorHandler.js";
 import { CreateOrderBody, CartItem,OrderItemRow, Order } from "../types/order.types.js";
 import { generateOrderReference } from "../utils/helper.js";
 
+// Add this mapping at the top of the file
+const mapToPaystackProvider = (network: string): string => {
+    const providerMap: Record<string, string> = {
+        'mtn': 'mtn',
+        'telecel': 'vod',      // Telecel uses Vodafone's USSD (*110#)
+        'vodafone': 'vod',     // Vodafone Cash
+        'airteltigo': 'tgo'    // AirtelTigo Money
+    };
+    return providerMap[network] || 'mtn';
+};
 
 export const createOrder = asyncHandler(
     async (req: Request, res:Response) => {
@@ -120,6 +130,8 @@ export const createOrder = asyncHandler(
                     };
                 };
             };
+            
+            const paystackProvider = mapToPaystackProvider(momo_network);
             const url = 'https://api.paystack.co/charge';
             const content = {
                 'amount': totalPesewas,
@@ -127,7 +139,7 @@ export const createOrder = asyncHandler(
                 'currency': 'GHS',
                 'mobile_money': {
                     'phone': customer_phone,
-                    'provider': momo_network
+                    'provider': paystackProvider
                 },
                 reference: reference
             }
@@ -150,6 +162,26 @@ export const createOrder = asyncHandler(
                 throw new AppError('Payment initialization failed',502)
 
             }
+
+            // Check the actual payment status
+                const paymentStatus = data.data?.status;
+
+                if (paymentStatus === 'pay_offline') {
+                    // This is NORMAL for MTN/AirtelTigo - customer must approve via USSD
+                    // Just proceed - the webhook will confirm payment
+                    console.log('Payment requires offline USSD approval');
+                } 
+                else if (paymentStatus === 'success') {
+                    // Immediate success (rare for mobile money)
+                    console.log('Payment completed immediately');
+                }
+                else if (paymentStatus === 'pending') {
+                    // Still processing - check later via webhook
+                    console.log('Payment pending');
+                }
+                else {
+                    throw new AppError(data.message || 'Payment initialization failed', 502);
+                }
 
             await connection.execute(
                 `INSERT INTO payments (order_id, paystack_reference, amount_pesewas, momo_network, phone, status)

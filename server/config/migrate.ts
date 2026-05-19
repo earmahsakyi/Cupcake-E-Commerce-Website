@@ -105,7 +105,7 @@ const runMigrations = async (): Promise<void> => {
             order_id INT NOT NULL,
             paystack_reference VARCHAR(100) NOT NULL UNIQUE,
             amount_pesewas INT NOT NULL,
-            momo_network ENUM('mtn', 'telecel', 'vodafone', 'airteltigo') NOT NULL,
+            momo_network ENUM('mtn', 'vod' 'tgo') NOT NULL,
             phone VARCHAR(20) NOT NULL,
             status ENUM('pending', 'success', 'failed') NOT NULL DEFAULT 'pending',
             paid_at DATETIME NULL,
