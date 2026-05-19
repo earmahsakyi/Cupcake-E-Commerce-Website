@@ -36,6 +36,7 @@ export interface OrderItem {
   size: "small" | "medium" | "large" | null;
   flavor_note: string | null;
   selected_flavors: string[] | null;
+  slot_flavors?: { slot_number: number; flavor: string }[] | null;
 }
 
 export interface Order {

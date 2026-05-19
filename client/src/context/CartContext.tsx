@@ -8,9 +8,14 @@ export type CartItem = {
   image: string;
   unitPrice: number;
   quantity: number;
-  size?: string;
-  flavor?: string;
-  message?: string;
+  
+  // Cupcake fields
+  size?: 'small' | 'medium' | 'large';
+  selected_flavors?: string[];
+  flavor_note?: string;
+
+  // Box fields
+  slot_flavors?: { slot_number: number; flavor: string }[];
 };
 
 type State = { 
@@ -26,7 +31,7 @@ type Action =
 
 const initial: State = {
    items: []
-   };
+};
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -35,7 +40,9 @@ function reducer(state: State, action: Action): State {
       if (existing) {
         return {
           items: state.items.map((i) =>
-            i.key === action.item.key ? { ...i, quantity: i.quantity + action.item.quantity } : i,
+            i.key === action.item.key 
+              ? { ...i, quantity: i.quantity + action.item.quantity } 
+              : i
           ),
         };
       }
@@ -101,15 +108,38 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const value = useMemo<Ctx>(() => {
     const subtotal = state.items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0);
     const count = state.items.reduce((sum, i) => sum + i.quantity, 0);
+
     return {
       items: state.items,
       count,
       subtotal,
-      addItem: (item) => {
-        const key =
-          item.key ??
-          [item.cakeId, item.size ?? "", item.flavor ?? "", item.message ?? ""].join("|");
-        dispatch({ type: "ADD", item: { ...item, key } });
+      addItem: (itemInput) => {
+        const item = { ...itemInput } as CartItem;
+
+        // Improved key generation
+        let keyParts: string[] = [item.cakeId];
+
+        if (item.size) keyParts.push(`size:${item.size}`);
+        if (item.selected_flavors && item.selected_flavors.length > 0) {
+          keyParts.push(`flavors:${item.selected_flavors.sort().join(",")}`);
+        }
+        if (item.slot_flavors && item.slot_flavors.length > 0) {
+          const slotsStr = item.slot_flavors
+            .map(s => `${s.slot_number}:${s.flavor}`)
+            .sort()
+            .join("|");
+          keyParts.push(`slots:${slotsStr}`);
+        }
+        if (item.flavor_note) {
+          keyParts.push(`note:${item.flavor_note}`);
+        }
+
+        const key = item.key ?? keyParts.join("|");
+
+        dispatch({ 
+          type: "ADD", 
+          item: { ...item, key } 
+        });
       },
       removeItem: (key) => dispatch({ type: "REMOVE", key }),
       setQuantity: (key, qty) => dispatch({ type: "SET_QTY", key, quantity: qty }),

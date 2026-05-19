@@ -1,35 +1,64 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { CheckCircle2, PartyPopper } from "lucide-react";
+import { CheckCircle2, PartyPopper, AlertCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { formatGHS } from "@/data/cakes";
-
-type Order = {
-  id: string;
-  items: { key: string; name: string; quantity: number; unitPrice: number; size?: string; flavor?: string }[];
-  subtotal: number;
-  delivery: number;
-  total: number;
-  customer: { name: string; phone: string; address: string; deliveryDate: string };
-};
+import { formatPesewas } from "@/lib/utils";
+import { fetchOrderById } from "@/store/slices/orderSlices";
+import { useAppDispatch, useAppSelector } from "@/store/index";
 
 const OrderSuccess = () => {
-  const [order, setOrder] = useState<Order | null>(null);
 
-  useEffect(() => {
-    document.title = "Order Confirmed | Sweet Crumbs Ghana";
-    try {
-      const raw = sessionStorage.getItem("sweet-crumbs-last-order");
-      if (raw) setOrder(JSON.parse(raw));
-    } catch {
-      /* ignore */
-    }
-  }, []);
+  const [searchParams] = useSearchParams();
+  const orderId = Number(searchParams.get("id"));
+  const dispatch = useAppDispatch();
+  const { currentOrder, fetchStatus, error } = useAppSelector(state => state.orders);
+
+  useEffect(()=> {
+    document.title = "Order Confirmed | CupOcake";
+    if(orderId) dispatch(fetchOrderById(orderId))
+  },[orderId, dispatch])
+
+    if (!orderId) {
+    return (
+      <main className="min-h-screen bg-background">
+        <Navbar />
+        <section className="container pt-28 text-center">
+          <p className="text-muted-foreground">No order found.</p>
+          <Link to="/" className="mt-4 inline-block text-primary underline">Back to home</Link>
+        </section>
+        <Footer />
+      </main>
+    );
+  }
+ if (fetchStatus === "loading") {
+    return (
+      <main className="min-h-screen bg-background">
+        <Navbar />
+        <section className="container pt-28 text-center">
+          <p className="text-muted-foreground animate-pulse">Loading your order…</p>
+        </section>
+        <Footer />
+      </main>
+    );
+  }
+  if (fetchStatus === "failed") {
+    return (
+      <main className="min-h-screen bg-background">
+        <Navbar />
+        <section className="container pt-28 text-center">
+          <AlertCircle className="mx-auto h-10 w-10 text-destructive" />
+          <p className="mt-3 text-muted-foreground">{error ?? "Could not load your order."}</p>
+          <Link to="/" className="mt-4 inline-block text-primary underline">Back to home</Link>
+        </section>
+        <Footer />
+      </main>
+    );
+  }
 
   return (
-    <main className="min-h-screen bg-background">
+        <main className="min-h-screen bg-background">
       <Navbar />
       <section className="container pt-28">
         <motion.div
@@ -46,61 +75,63 @@ const OrderSuccess = () => {
           >
             <CheckCircle2 className="h-10 w-10 text-primary" />
           </motion.div>
+
           <h1 className="mt-6 font-serif text-3xl text-foreground sm:text-4xl">
             Thank you! <PartyPopper className="inline h-7 w-7 text-primary" />
           </h1>
           <p className="mt-2 text-muted-foreground">
-            Your order has been received. We'll be in touch shortly to confirm the details.
+            Your order has been received. We'll be in touch shortly to confirm.
           </p>
 
-          {order && (
+          {currentOrder && (
             <>
               <div className="mt-6 inline-flex flex-col items-center rounded-2xl bg-secondary/60 px-6 py-3">
-                <span className="text-xs uppercase tracking-widest text-muted-foreground">Order ID</span>
-                <span className="font-serif text-2xl font-semibold text-foreground">{order.id}</span>
+                <span className="text-xs uppercase tracking-widest text-muted-foreground">Reference</span>
+                <span className="font-serif text-2xl font-semibold text-foreground">{currentOrder.reference}</span>
               </div>
 
               <div className="mt-8 text-left">
-                <h2 className="font-serif text-lg text-foreground">Summary</h2>
+                <h2 className="font-serif text-lg text-foreground">Order summary</h2>
                 <ul className="mt-3 divide-y divide-border rounded-2xl border border-border">
-                  {order.items.map((i) => (
-                    <li key={i.key} className="flex items-center justify-between p-4 text-sm">
+                  {currentOrder.items.map((item) => (
+                    <li key={item.id} className="flex items-center justify-between p-4 text-sm">
                       <div>
                         <p className="font-medium text-foreground">
-                          {i.quantity} × {i.name}
+                          {item.quantity} × {item.product_name}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {[i.size, i.flavor].filter(Boolean).join(" • ")}
+                          {[item.size, item.flavor_note].filter(Boolean).join(" • ")}
                         </p>
                       </div>
-                      <p className="font-semibold text-foreground">{formatGHS(i.unitPrice * i.quantity)}</p>
+                      <p className="font-semibold text-foreground">
+                        {formatPesewas(item.unit_price_pesewas * item.quantity)}
+                      </p>
                     </li>
                   ))}
                 </ul>
+
                 <dl className="mt-4 space-y-1 text-sm">
-                  <div className="flex justify-between">
-                    <dt className="text-muted-foreground">Subtotal</dt>
-                    <dd className="text-foreground">{formatGHS(order.subtotal)}</dd>
-                  </div>
-                  <div className="flex justify-between">
-                    <dt className="text-muted-foreground">Delivery</dt>
-                    <dd className="text-foreground">{formatGHS(order.delivery)}</dd>
-                  </div>
                   <div className="flex justify-between border-t border-border pt-2">
                     <dt className="font-serif text-base text-foreground">Total paid</dt>
-                    <dd className="font-serif text-lg font-semibold text-primary">{formatGHS(order.total)}</dd>
+                    <dd className="font-serif text-lg font-semibold text-primary">
+                      {formatPesewas(currentOrder.total_pesewas)}
+                    </dd>
                   </div>
                 </dl>
 
-                <div className="mt-6 rounded-2xl bg-secondary/40 p-4 text-sm">
-                  <p className="font-semibold text-foreground">Delivery to</p>
-                  <p className="text-muted-foreground">{order.customer.name} • {order.customer.phone}</p>
-                  <p className="text-muted-foreground">{order.customer.address}</p>
+                <div className="mt-6 rounded-2xl bg-secondary/40 p-4 text-sm text-left">
+                  <p className="font-semibold text-foreground">Delivering to</p>
                   <p className="mt-1 text-muted-foreground">
-                    Delivery date: <span className="font-medium text-foreground">{order.customer.deliveryDate}</span>
+                    {currentOrder.customer_name} • {currentOrder.customer_phone}
                   </p>
+                  <p className="text-muted-foreground">{currentOrder.delivery_address}</p>
                 </div>
               </div>
+              <div className="mt-4 rounded-2xl bg-secondary/60 p-4 text-sm text-muted-foreground">
+              <p className="font-semibold text-foreground">📱 Approve your MoMo payment</p>
+              <p className="mt-1">Check your phone for a MoMo approval prompt. If you didn't receive one, dial <span className="font-semibold text-foreground">*170#</span> (MTN) or <span className="font-semibold text-foreground">*110#</span> (Telecel) to approve manually.</p>
+              <p className="mt-2">Your order status will update automatically once payment is confirmed.</p>
+            </div>
             </>
           )}
 
@@ -116,6 +147,7 @@ const OrderSuccess = () => {
       <Footer />
     </main>
   );
-};
+  
+}
 
 export default OrderSuccess;

@@ -4,11 +4,11 @@ import { ArrowLeft, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useCart } from "@/context/CartContext";
-import { formatGHS } from "@/data/cakes";
+import { formatPesewas } from "@/lib/utils";
 
 const Cart = () => {
   const { items, subtotal, setQuantity, removeItem } = useCart();
-  const delivery = items.length ? 30 : 0;
+  
 
   return (
     <main className="min-h-screen bg-background">
@@ -60,11 +60,11 @@ const Cart = () => {
                             {item.name}
                           </Link>
                           <p className="text-xs text-muted-foreground">
-                            {[item.size, item.flavor].filter(Boolean).join(" • ")}
+                            {[item.size, item.flavor_note].filter(Boolean).join(" • ")}
                           </p>
-                          {item.message && (
+                          {/* {item.message && (
                             <p className="mt-1 text-xs italic text-muted-foreground">"{item.message}"</p>
-                          )}
+                          )} */}
                         </div>
                         <button
                           aria-label={`Remove ${item.name}`}
@@ -93,7 +93,7 @@ const Cart = () => {
                           </button>
                         </div>
                         <p className="font-serif text-lg font-semibold text-primary">
-                          {formatGHS(item.unitPrice * item.quantity)}
+                          {formatPesewas(item.unitPrice * item.quantity)}
                         </p>
                       </div>
                     </div>
@@ -107,16 +107,12 @@ const Cart = () => {
               <dl className="mt-4 space-y-3 text-sm">
                 <div className="flex justify-between">
                   <dt className="text-muted-foreground">Subtotal</dt>
-                  <dd className="font-semibold text-foreground">{formatGHS(subtotal)}</dd>
-                </div>
-                <div className="flex justify-between">
-                  <dt className="text-muted-foreground">Delivery (est.)</dt>
-                  <dd className="font-semibold text-foreground">{formatGHS(delivery)}</dd>
+                  <dd className="font-semibold text-foreground">{formatPesewas(subtotal)}</dd>
                 </div>
                 <div className="border-t border-border pt-3 flex justify-between">
                   <dt className="font-serif text-base text-foreground">Total</dt>
                   <dd className="font-serif text-xl font-semibold text-primary">
-                    {formatGHS(subtotal + delivery)}
+                    {formatPesewas(subtotal)}
                   </dd>
                 </div>
               </dl>
