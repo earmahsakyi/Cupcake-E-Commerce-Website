@@ -141,7 +141,8 @@ export const createOrder = asyncHandler(
                     'phone': customer_phone,
                     'provider': paystackProvider
                 },
-                reference: reference
+                'channels': ['mobile_money_ussd'],
+                'reference': reference
             }
 
             const response = await fetch(
