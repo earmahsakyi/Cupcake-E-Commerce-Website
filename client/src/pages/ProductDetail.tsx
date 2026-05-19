@@ -4,43 +4,64 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, Check, Minus, Plus, ShoppingBag } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { cakes, formatGHS, getCakeBySlug } from "@/data/cakes";
+import { useAppDispatch, useAppSelector } from "@/store/index";
+import { fetchProducts } from "@/store/slices/productsSlice";
+import { formatPesewas } from "@/lib/utils";
+import { getStartingPrice } from "@/lib/utils";
 import { useCart } from "@/context/CartContext";
 import { toast } from "@/hooks/use-toast";
 
 const ProductDetail = () => {
   const { slug = "" } = useParams();
-  const cake = getCakeBySlug(slug);
+  const dispatch = useAppDispatch();
+  const {items: products, status} = useAppSelector(state => state.products)
+  const product = products.find((p) => p.slug === slug);
+
   const { addItem, openCart } = useCart();
   const [activeImg, setActiveImg] = useState(0);
-  const [size, setSize] = useState<string | undefined>(cake?.sizes?.[0]?.label);
-  const [flavor, setFlavor] = useState<string | undefined>(cake?.flavors?.[0]);
-  const [message, setMessage] = useState("");
+  const [size, setSize] = useState<'small' | 'medium' | 'large' | undefined>(product?.variants?.[0]?.size);
+  const [flavor, setFlavor] = useState<string | undefined>(product?.flavors?.[0]);
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
+
+
+    useEffect(() => {
+    if(status === 'idle') dispatch(fetchProducts());
+  },[dispatch, status])
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     setActiveImg(0);
-    setSize(cake?.sizes?.[0]?.label);
-    setFlavor(cake?.flavors?.[0]);
-    setMessage("");
+    setSize(product?.variants?.[0]?.size);
+    setFlavor(product?.flavors?.[0]);
     setQty(1);
-  }, [slug, cake]);
+  }, [slug, product]);
 
   useEffect(() => {
-    if (cake) document.title = `${cake.name} | Cup O' Cake`;
-  }, [cake]);
+    if (product) document.title = `${product.name} | Cup O' Cake`;
+  }, [product]);
 
   const unitPrice = useMemo(() => {
-    if (!cake) return 0;
-    const delta = cake.sizes?.find((s) => s.label === size)?.priceDelta ?? 0;
-    return cake.price + delta;
-  }, [cake, size]);
+    if (!product) return 0;
+      if( product.variants.length > 0){
+        const variant = product.variants.find((v) => v.size === size);
+        return variant?.price_pesewas ?? product.variants[0].price_pesewas;
+      }
+      if (product.box_price_pesewas) return product.box_price_pesewas;
+      return 0
+  }, [product, size]);
 
-  const related = useMemo(() => cakes.filter((c) => c.id !== cake?.id).slice(0, 3), [cake]);
+  const related = useMemo(() => products.filter((p) => p.id !== product?.id).slice(0, 3), [product, products]);
 
-  if (!cake) {
+  if (status === "loading") return (
+  <main className="min-h-screen bg-background">
+    <Navbar />
+    <div className="flex h-screen items-center justify-center">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-pink-500 border-t-transparent" />
+    </div>
+  </main>
+);
+  if (!product) {
     return (
       <main className="min-h-screen bg-background">
         <Navbar />
@@ -53,19 +74,19 @@ const ProductDetail = () => {
   }
 
   const handleAdd = () => {
+    if (!product) return;
     addItem({
-      cakeId: cake.id,
-      slug: cake.slug,
-      name: cake.name,
-      image: cake.images[0],
+      cakeId: String(product.id),
+      slug: product.slug,
+      name: product.name,
+      image: product.images[0] ?? '',
       unitPrice,
       quantity: qty,
       size,
       flavor,
-      message: message.trim().slice(0, 120) || undefined,
     });
     setAdded(true);
-    toast({ title: "Added to cart", description: `${qty} × ${cake.name}` });
+    toast({ title: "Added to cart", description: `${qty} × ${product.name}` });
     setTimeout(() => setAdded(false), 1600);
   };
 
@@ -87,8 +108,8 @@ const ProductDetail = () => {
               <AnimatePresence mode="wait">
                 <motion.img
                   key={activeImg}
-                  src={cake.images[activeImg]}
-                  alt={`${cake.name} view ${activeImg + 1}`}
+                  src={product?.images[activeImg]}
+                  alt={`${product?.name} view ${activeImg + 1}`}
                   initial={{ opacity: 0, scale: 1.03 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.98 }}
@@ -96,14 +117,14 @@ const ProductDetail = () => {
                   className="absolute inset-0 h-full w-full object-cover"
                 />
               </AnimatePresence>
-              {cake.tag && (
+              {/* {cake.tag && (
                 <span className="absolute left-4 top-4 rounded-full bg-card/95 px-3 py-1 text-xs font-semibold text-primary backdrop-blur">
                   {cake.tag}
                 </span>
-              )}
+              )} */}
             </div>
             <div className="mt-4 grid grid-cols-3 gap-3">
-              {cake.images.map((img, i) => (
+              {product?.images.map((img, i) => (
                 <button
                   key={img + i}
                   onClick={() => setActiveImg(i)}
@@ -120,36 +141,36 @@ const ProductDetail = () => {
 
           {/* Details */}
           <div>
-            <h1 className="font-serif text-3xl text-foreground sm:text-4xl">{cake.name}</h1>
-            <p className="mt-2 text-2xl font-semibold text-primary">{formatGHS(unitPrice)}</p>
-            <p className="mt-4 text-base leading-relaxed text-muted-foreground">{cake.description}</p>
+            <h1 className="font-serif text-3xl text-foreground sm:text-4xl">{product?.name}</h1>
+            <p className="mt-2 text-2xl font-semibold text-primary">{formatPesewas(unitPrice)}</p>
+            <p className="mt-4 text-base leading-relaxed text-muted-foreground">{product?.description}</p>
 
-            {cake.sizes && (
+            {product?.variants.length > 0 && (
               <div className="mt-6">
                 <p className="text-sm font-semibold text-foreground">Size</p>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  {cake.sizes.map((s) => (
+                  {product?.variants.map((v) => (
                     <button
-                      key={s.label}
-                      onClick={() => setSize(s.label)}
+                      key={v.size}
+                      onClick={() => setSize(v.size)}
                       className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
-                        size === s.label
+                        size === v.size
                           ? "border-primary bg-primary text-primary-foreground"
                           : "border-border bg-card text-foreground hover:border-primary"
                       }`}
                     >
-                      {s.label}
+                      {v.size} - {formatPesewas(v.price_pesewas)}
                     </button>
                   ))}
                 </div>
               </div>
             )}
 
-            {cake.flavors && (
+            {product?.flavors.length > 0 && (
               <div className="mt-5">
                 <p className="text-sm font-semibold text-foreground">Flavor</p>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  {cake.flavors.map((f) => (
+                  {product?.flavors.map((f) => (
                     <button
                       key={f}
                       onClick={() => setFlavor(f)}
@@ -166,22 +187,7 @@ const ProductDetail = () => {
               </div>
             )}
 
-            {cake.allowMessage && (
-              <div className="mt-5">
-                <label htmlFor="msg" className="text-sm font-semibold text-foreground">
-                  Custom message <span className="font-normal text-muted-foreground">(optional, max 120 chars)</span>
-                </label>
-                <input
-                  id="msg"
-                  type="text"
-                  value={message}
-                  maxLength={120}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="e.g. Happy Birthday Ama!"
-                  className="mt-2 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
-                />
-              </div>
-            )}
+        
 
             <div className="mt-6 flex items-center gap-4">
               <div className="inline-flex items-center rounded-full border border-border bg-card">
@@ -202,7 +208,7 @@ const ProductDetail = () => {
                 </button>
               </div>
               <p className="text-sm text-muted-foreground">
-                Total: <span className="font-semibold text-foreground">{formatGHS(unitPrice * qty)}</span>
+                Total: <span className="font-semibold text-foreground">{formatPesewas(unitPrice * qty)}</span>
               </p>
             </div>
 
@@ -270,7 +276,7 @@ const ProductDetail = () => {
                 <div className="flex items-center justify-between p-5">
                   <div>
                     <h3 className="font-serif text-lg font-semibold text-foreground">{c.name}</h3>
-                    <p className="mt-1 text-sm font-medium text-primary">{formatGHS(c.price)}</p>
+                    <p className="mt-1 text-sm font-medium text-primary">{formatPesewas(getStartingPrice(c))}</p>
                   </div>
                   <span className="rounded-full bg-primary-soft px-4 py-2 text-xs font-semibold text-primary">
                     View

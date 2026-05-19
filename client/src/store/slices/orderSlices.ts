@@ -28,6 +28,18 @@ export const fetchOrderById = createAsyncThunk(
     }
 );
 
+export const fetchAllOrders = createAsyncThunk(
+    'orders/fetch',
+    async(_, { rejectWithValue }) => {
+        try {
+            const res = await axiosInstance.get('/api/orders');
+            return res.data.orders as Order[];
+        } catch (err) {
+            return rejectWithValue(getErrorMessage(err));
+        }
+    }
+)
+
 interface OrderState {
     currentOrder: Order | null;
     createdReference: string | null;
@@ -35,6 +47,8 @@ interface OrderState {
     submitStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
     fetchStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null;
+    allOrders: Order [];
+    fetchAllStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
 }
 
 const initialState: OrderState = {
@@ -44,6 +58,9 @@ const initialState: OrderState = {
     submitStatus: 'idle',
     fetchStatus: 'idle',
     error: null,
+    allOrders: [],
+    fetchAllStatus: 'idle'
+
 }
 
 
@@ -73,6 +90,18 @@ const ordersSlice = createSlice({
             state.submitStatus = 'failed';
             state.error = action.payload as string
         })
+        .addCase(fetchAllOrders.pending, (state) => {
+            state.fetchAllStatus = 'loading';
+            state.error = null;
+        })
+        .addCase(fetchAllOrders.fulfilled, (state, action) => {
+            state.fetchAllStatus = 'succeeded';
+            state.allOrders = action.payload;
+        })
+        .addCase(fetchAllOrders.rejected, (state, action)=> {
+            state.fetchAllStatus = 'failed';
+            state.error = action.payload as string;
+        })
         .addCase(fetchOrderById.pending, (state) => {
             state.fetchStatus = 'loading';
             state.error = null;
@@ -85,6 +114,7 @@ const ordersSlice = createSlice({
             state.fetchStatus = 'failed';
             state.error = action.payload as string
         });
+        
     }
 });
 

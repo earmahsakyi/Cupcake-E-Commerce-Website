@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "@/services/axiosInstance";
 import { getErrorMessage } from "@/lib/utils";
 import { AdminUser } from "../types";
+import axios from 'axios';
 
 interface LoginCredentials {
     email: string;
@@ -49,6 +50,9 @@ export const loginAdmin = createAsyncThunk(
             const res = await axiosInstance.post('/api/auth/login', credential);
             return res.data as LoginResponse;
         } catch (err) {
+           if (axios.isAxiosError(err) && err.response?.status === 423){
+          return rejectWithValue('LOCKED')
+        }
             return rejectWithValue(getErrorMessage(err))
         }
     }

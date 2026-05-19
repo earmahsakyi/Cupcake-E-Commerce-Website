@@ -33,9 +33,8 @@ const Login = () => {
       toast.success(`Welcome back, ${result.name.split(" ")[0]}!`);
       navigate("/admin");
     } catch (err) {
-      if (axios.isAxiosError(err) && err.response?.status === 423) {
-        navigate(`/admin/locked?email=${encodeURIComponent(email)}`);
-        return;
+      if (err === 'LOCKED'){
+        navigate(`/admin/locked?email=${encodeURIComponent(email)}`)
       }
     }
   };

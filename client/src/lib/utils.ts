@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import axios from "axios";
+import { Product } from "@/store/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -45,3 +46,17 @@ export const passwordChecks = [
     test: (password: string) => /[\W_]/.test(password),
   },
 ];
+
+export const formatPesewas = (pesewas: number): string => {
+  return `GH₵ ${(pesewas / 100).toFixed(2)}`;
+}
+
+ export const getStartingPrice = (product:Product): number => {
+  if (product.variants.length > 0){
+    return Math.min(...product.variants.map((v) => v.price_pesewas))
+
+  };
+
+  if (product.box_price_pesewas) return product.box_price_pesewas;
+  return 0;
+};

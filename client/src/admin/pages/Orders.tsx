@@ -1,37 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Search } from "lucide-react";
 import AdminLayout from "@/admin/AdminLayout";
-import { ordersStore } from "@/admin/store";
-import { useStore } from "@/admin/useStore";
-import { formatGHS } from "@/data/cakes";
 import StatusBadge from "@/admin/components/StatusBadge";
-import { OrderStatus } from "@/admin/types";
+import { OrderStatus } from "@/store/types";
+import { useAppDispatch, useAppSelector } from "@/store/index";
+import { formatPesewas } from "@/lib/utils";
+import { fetchAllOrders } from "@/store/slices/orderSlices";
 
-const statuses: ("All" | OrderStatus)[] = ["All", "Pending", "Preparing", "Out for Delivery", "Delivered", "Cancelled"];
+const statuses: ("All" | OrderStatus)[] = ["All", "pending", "paid", "processing", "delivered", "cancelled"];
 
 const Orders = () => {
-  const orders = useStore(ordersStore);
+  const dispatch = useAppDispatch();
+
+  const {allOrders, fetchAllStatus} = useAppSelector((state) => state.orders);
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState<"All" | OrderStatus>("All");
 
-  const filtered = orders.filter((o) => {
+  const filtered = allOrders.filter((o) => {
     if (filter !== "All" && o.status !== filter) return false;
     if (q) {
       const s = q.toLowerCase();
-      return o.id.toLowerCase().includes(s) || o.customer.name.toLowerCase().includes(s) || o.customer.phone.includes(s);
+      return String(o.id).includes(s) || o.customer_name.toLowerCase().includes(s) || o.customer_phone.includes(s)
     }
     return true;
   });
+
+  useEffect(()=> {
+    dispatch(fetchAllOrders())
+  },[dispatch]);
+
+  if (fetchAllStatus === 'loading') return (
+    <AdminLayout>
+      <div className="flex h-64 items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-pink-500 border-t-transparent"/>
+
+      </div>
+    </AdminLayout>
+  )
 
   return (
     <AdminLayout>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-serif text-2xl text-foreground sm:text-3xl">Orders</h1>
-          <p className="text-sm text-muted-foreground">{filtered.length} of {orders.length} orders</p>
+          <p className="text-sm text-muted-foreground">{filtered.length} of {allOrders.length} orders</p>
         </div>
-        <div className="relative">
+        <div className="relative flex gap-3">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
             value={q}
@@ -73,14 +88,14 @@ const Orders = () => {
               <tr key={o.id} className="cursor-pointer hover:bg-secondary/30">
                 <td className="px-5 py-3 font-medium text-foreground">
                   <Link to={`/admin/orders/${o.id}`}>
-                    {o.id} {o.urgent && <span className="ml-1 rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-bold uppercase text-destructive">Urgent</span>}
+                    {o.id} {o.is_urgent && <span className="ml-1 rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-bold uppercase text-destructive">Urgent</span>}
                   </Link>
                 </td>
-                <td className="px-5 py-3"><Link to={`/admin/orders/${o.id}`} className="text-foreground">{o.customer.name}</Link></td>
-                <td className="px-5 py-3 text-muted-foreground">{o.customer.phone}</td>
-                <td className="px-5 py-3 text-muted-foreground">{o.customer.deliveryDate}</td>
+                <td className="px-5 py-3"><Link to={`/admin/orders/${o.id}`} className="text-foreground">{o.customer_name}</Link></td>
+                <td className="px-5 py-3 text-muted-foreground">{o.customer_phone}</td>
+                <td className="px-5 py-3 text-muted-foreground">{new Date(o.created_at).toLocaleDateString()}</td>
                 <td className="px-5 py-3"><StatusBadge status={o.status} /></td>
-                <td className="px-5 py-3 text-right font-semibold text-foreground">{formatGHS(o.total)}</td>
+                <td className="px-5 py-3 text-right font-semibold text-foreground">{formatPesewas(o.total_pesewas)}</td>
               </tr>
             ))}
             {filtered.length === 0 && (

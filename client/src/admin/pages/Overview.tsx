@@ -12,16 +12,17 @@ import {
   Tooltip,
 } from "recharts";
 import AdminLayout from "@/admin/AdminLayout";
-import { ordersStore } from "@/admin/store";
-import { useStore } from "@/admin/useStore";
-import { formatGHS } from "@/data/cakes";
 import StatusBadge from "@/admin/components/StatusBadge";
+import { useAppDispatch, useAppSelector } from "@/store/index";
+import { formatPesewas } from "@/lib/utils";
+import { fetchAllOrders } from "@/store/slices/orderSlices";
+import { Order } from "@/store/types";
+import { useEffect } from "react";
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-import type { AdminOrder } from "@/admin/types";
 
-function buildMonthlySeries(orders: AdminOrder[]) {
+function buildMonthlySeries(orders: Order[]) {
   const now = new Date();
   const buckets: { key: string; label: string; revenue: number; orders: number }[] = [];
   for (let i = 11; i >= 0; i--) {
@@ -31,37 +32,51 @@ function buildMonthlySeries(orders: AdminOrder[]) {
   }
   const map = new Map(buckets.map((b) => [b.key, b]));
   orders.forEach((o) => {
-    const key = o.createdAt.slice(0, 7);
+    const key = o.created_at.slice(0, 7);
     const b = map.get(key);
     if (!b) return;
     b.orders += 1;
-    if (o.paymentStatus === "paid") b.revenue += o.total;
+    if (o.status === "paid") b.revenue += o.total_pesewas;
   });
   return buckets;
 }
 
 const Overview = () => {
-  const orders = useStore(ordersStore);
+  const dispatch = useAppDispatch();
+  const {allOrders, fetchAllStatus} = useAppSelector((state) => state.orders);
   const today = new Date().toISOString().slice(0, 10);
 
   const totals = {
-    orders: orders.length,
-    revenue: orders.filter((o) => o.paymentStatus === "paid").reduce((s, o) => s + o.total, 0),
-    today: orders.filter((o) => o.createdAt.slice(0, 10) === today).length,
-    pending: orders.filter((o) => o.status === "Pending").length,
-    delivered: orders.filter((o) => o.status === "Delivered").length,
+    orders: allOrders.length,
+    revenue: allOrders.filter((o) => o.status === "paid").reduce((s, o) => s + o.total_pesewas, 0),
+    today: allOrders.filter((o) => new Date(o.created_at).toISOString().slice(0, 10) === today).length,
+    pending: allOrders.filter((o) => o.status === "pending").length,
+    delivered: allOrders.filter((o) => o.status === "delivered").length,
   };
 
-  const monthly = buildMonthlySeries(orders);
+  const monthly = buildMonthlySeries(allOrders);
   const hasData = monthly.some((m) => m.orders > 0 || m.revenue > 0);
 
   const cards = [
     { label: "Total Orders", value: totals.orders, icon: ShoppingBag, tone: "bg-primary-soft text-primary" },
-    { label: "Total Revenue", value: formatGHS(totals.revenue), icon: Coins, tone: "bg-accent text-chocolate" },
+    { label: "Total Revenue", value: formatPesewas(totals.revenue), icon: Coins, tone: "bg-accent text-chocolate" },
     { label: "Orders Today", value: totals.today, icon: CalendarDays, tone: "bg-secondary text-foreground" },
     { label: "Pending", value: totals.pending, icon: Clock, tone: "bg-amber-100 text-amber-700" },
     { label: "Delivered", value: totals.delivered, icon: CheckCircle2, tone: "bg-emerald-100 text-emerald-700" },
   ];
+
+    useEffect(()=> {
+      dispatch(fetchAllOrders())
+    },[dispatch]);
+
+     if (fetchAllStatus === 'loading') return (
+    <AdminLayout>
+      <div className="flex h-64 items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-pink-500 border-t-transparent"/>
+
+      </div>
+    </AdminLayout>
+  )
 
   return (
     <AdminLayout>
@@ -110,7 +125,7 @@ const Overview = () => {
                     borderRadius: 12,
                     fontSize: 12,
                   }}
-                  formatter={(value: number) => [formatGHS(value), "Revenue"]}
+                  formatter={(value: number) => [formatPesewas(value), "Revenue"]}
                 />
                 <Area type="monotone" dataKey="revenue" stroke="hsl(var(--primary))" strokeWidth={2} fill="url(#revFill)" />
               </AreaChart>
@@ -171,20 +186,20 @@ const Overview = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {orders.slice(0, 6).map((o) => (
+              {allOrders.slice(0, 6).map((o) => (
                 <tr key={o.id} className="hover:bg-secondary/30">
                   <td className="px-5 py-3 font-medium text-foreground">
                     <Link to={`/admin/orders/${o.id}`} className="hover:text-primary">
-                      {o.id} {o.urgent && <span className="ml-1 rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-bold uppercase text-destructive">Urgent</span>}
+                      {o.id} {o.is_urgent && <span className="ml-1 rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-bold uppercase text-destructive">Urgent</span>}
                     </Link>
                   </td>
-                  <td className="px-5 py-3 text-foreground">{o.customer.name}</td>
-                  <td className="px-5 py-3 text-muted-foreground">{o.customer.deliveryDate}</td>
+                  <td className="px-5 py-3 text-foreground">{o.customer_name}</td>
+                  <td className="px-5 py-3 text-muted-foreground">{new Date(o.created_at).toLocaleDateString()}</td>
                   <td className="px-5 py-3"><StatusBadge status={o.status} /></td>
-                  <td className="px-5 py-3 text-right font-semibold text-foreground">{formatGHS(o.total)}</td>
+                  <td className="px-5 py-3 text-right font-semibold text-foreground">{formatPesewas(o.total_pesewas)}</td>
                 </tr>
               ))}
-              {orders.length === 0 && (
+              {allOrders.length === 0 && (
                 <tr><td colSpan={5} className="px-5 py-10 text-center text-muted-foreground">No orders yet.</td></tr>
               )}
             </tbody>
