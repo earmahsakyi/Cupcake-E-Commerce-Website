@@ -15,7 +15,7 @@ import AdminLayout from "@/admin/AdminLayout";
 import StatusBadge from "@/admin/components/StatusBadge";
 import { useAppDispatch, useAppSelector } from "@/store/index";
 import { formatPesewas } from "@/lib/utils";
-import { fetchAllOrders } from "@/store/slices/orderSlices";
+import { fetchAllOrders } from "@/store/slices/ordersSlice";
 import { Order } from "@/store/types";
 import { useEffect } from "react";
 

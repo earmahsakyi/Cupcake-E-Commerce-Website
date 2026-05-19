@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import productsReducer from '@/store/slices/productsSlice';
-import ordersReducer from "@/store/slices/orderSlices";
+import ordersReducer from "@/store/slices/ordersSlice";
 import adminAuthReducer from "@/store/slices/adminAuthSlice";
 import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux';
 

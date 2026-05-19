@@ -68,7 +68,10 @@ export interface CartItem {
     flavor_note?: string;
     slot_flavors?: { slot_number: number; flavor: string }[];
 }
-
+export interface SubmitOtpBody {
+  otp: string;
+  reference: string;
+}
 export interface CreateOrderBody {
     customer_name: string;
     customer_phone: string;

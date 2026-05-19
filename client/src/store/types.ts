@@ -56,7 +56,7 @@ export interface CreateOrderPayload {
   customer_name: string;
   customer_phone: string;
   delivery_address: string;
-  momo_network: "mtn" | "vod" | "tgo";
+  momo_network: "mtn" | "telecel" | "vodafone" | "airteltigo"
   items: CartItemPayload[];
 }
 
@@ -67,6 +67,11 @@ export interface CartItemPayload {
   selected_flavors?: string[];
   flavor_note?: string;
   slot_flavors?: { slot_number: number; flavor: string }[];
+}
+
+export interface SubmitOtpPayload {
+  otp: string;
+  reference: string;
 }
 
 // ─── Admin auth types

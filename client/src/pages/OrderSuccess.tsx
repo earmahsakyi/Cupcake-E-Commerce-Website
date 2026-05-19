@@ -5,7 +5,7 @@ import { CheckCircle2, PartyPopper, AlertCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { formatPesewas } from "@/lib/utils";
-import { fetchOrderById } from "@/store/slices/orderSlices";
+import { fetchOrderById } from "@/store/slices/ordersSlice";
 import { useAppDispatch, useAppSelector } from "@/store/index";
 
 const OrderSuccess = () => {

@@ -6,7 +6,7 @@ import StatusBadge from "@/admin/components/StatusBadge";
 import { OrderStatus } from "@/store/types";
 import { useAppDispatch, useAppSelector } from "@/store/index";
 import { formatPesewas } from "@/lib/utils";
-import { fetchAllOrders } from "@/store/slices/orderSlices";
+import { fetchAllOrders } from "@/store/slices/ordersSlice";
 
 const statuses: ("All" | OrderStatus)[] = ["All", "pending", "paid", "processing", "delivered", "cancelled"];
 

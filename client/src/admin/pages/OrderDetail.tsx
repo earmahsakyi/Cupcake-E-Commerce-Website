@@ -7,7 +7,7 @@ import StatusBadge from "@/admin/components/StatusBadge";
 import { OrderStatus } from "@/store/types";
 import { useAppDispatch, useAppSelector } from "@/store/index";
 import { formatPesewas } from "@/lib/utils";
-import { fetchOrderById } from "@/store/slices/orderSlices";
+import { fetchOrderById } from "@/store/slices/ordersSlice";
 
 import { toast } from "sonner";
 

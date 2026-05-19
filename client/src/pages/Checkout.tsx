@@ -6,7 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useCart } from "@/context/CartContext";
 import { formatPesewas } from "@/lib/utils";
-import { createOrder, resetOrderState } from "@/store/slices/orderSlices";
+import { createOrder, resetOrderState, submitOtp } from "@/store/slices/ordersSlice";
 import { useAppDispatch, useAppSelector } from "@/store/index";
 import { toast } from "@/hooks/use-toast";
 import { CreateOrderPayload } from "@/store/types";
@@ -15,7 +15,9 @@ const Checkout = () => {
   const { items, subtotal, clear } = useCart();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { submitStatus, error } = useAppSelector(state => state.orders);
+  const [otpValue, setOtpValue] = useState("");
+  const { submitStatus, error, requiresOtp, createdReference, createdOrderId, otpStatus, otpError } 
+    = useAppSelector(state => state.orders);
 
   const [form, setForm] = useState({
     name: "",
@@ -23,7 +25,7 @@ const Checkout = () => {
     address: "",
     deliveryDate: "",
     notes: "",
-    network: "mtn" as "mtn" | "vod" | "tgo"
+    network: "mtn" as "mtn" | "telecel" | "vodafone" | "airteltigo"
   });
 
   useEffect(() => {
@@ -99,8 +101,10 @@ const Checkout = () => {
 
     try {
       const result = await dispatch(createOrder(payload)).unwrap();
+      if (!result.requiresOtp) {
       clear();
       navigate(`/order-success?id=${result.orderId}&reference=${result.reference}`);
+      }
     } catch (err: any) {
       toast({
         title: "Order failed",
@@ -109,6 +113,26 @@ const Checkout = () => {
       });
     }
   };
+
+  const handleOtpSubmit = async () => {
+  if (!otpValue.trim() || otpValue.length < 4) {
+    toast({ title: "Invalid OTP", description: "Please enter the OTP sent to your phone.", variant: "destructive" });
+    return;
+  }
+  if (!createdReference) return;
+
+  try {
+    await dispatch(submitOtp({ otp: otpValue, reference: createdReference })).unwrap();
+    clear();
+    navigate(`/order-success?id=${createdOrderId}`);
+  } catch (err: any) {
+    toast({
+      title: "OTP failed",
+      description: err || "Invalid or expired OTP. Please try again.",
+      variant: "destructive",
+    });
+  }
+};
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm((f) => ({ ...f, [k]: e.target.value }));
@@ -209,9 +233,10 @@ const Checkout = () => {
                 className="input-base"
                 required
               >
-                <option value="mtn">MTN Mobile Money</option>
-                <option value="vod">Telecel Cash</option>
-                <option value="tgo">AirtelTigo Money</option>
+              <option value="mtn">MTN Mobile Money</option>
+              <option value="telecel">Telecel Cash</option>
+              <option value="vodafone">Vodafone Cash</option>
+              <option value="airteltigo">AirtelTigo Money</option>
               </select>
             </Field>
 
@@ -232,15 +257,6 @@ const Checkout = () => {
               <Lock className="h-4 w-4" />
               {submitStatus === 'loading' ? "Processing…" : `Pay Now • ${formatPesewas(total)}`}
             </button>
-
-            {submitStatus === 'loading' && (
-              <div className="mt-4 rounded-2xl bg-secondary/60 p-4 text-sm text-muted-foreground text-center">
-                <p className="font-semibold text-foreground">Check your phone 📱</p>
-                <p className="mt-1">
-                  You should receive a MoMo prompt shortly. Approve it to complete your order.
-                </p>
-              </div>
-            )}
           </motion.form>
 
           {/* Order Summary */}
@@ -296,6 +312,42 @@ const Checkout = () => {
           </aside>
         </div>
       </section>
+      {requiresOtp && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full max-w-sm rounded-3xl bg-card p-8 shadow-card"
+          >
+            <h2 className="font-serif text-2xl text-foreground">Enter OTP</h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              An OTP was sent to <span className="font-semibold text-foreground">{form.phone}</span>. Enter it below to confirm your payment.
+            </p>
+
+            <input
+              type="number"
+              maxLength={6}
+              value={otpValue}
+              onChange={(e) => setOtpValue(e.target.value)}
+              className="input-base mt-5 text-center text-xl tracking-widest"
+              placeholder="123456"
+              autoFocus
+            />
+
+            {otpError && (
+              <p className="mt-2 text-sm text-destructive">{otpError}</p>
+            )}
+
+            <button
+              onClick={handleOtpSubmit}
+              disabled={otpStatus === 'loading'}
+              className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-full bg-gradient-primary text-sm font-semibold text-primary-foreground shadow-soft disabled:opacity-70"
+            >
+              {otpStatus === 'loading' ? "Verifying…" : "Confirm Payment"}
+            </button>
+          </motion.div>
+        </div>
+      )}
       <Footer />
     </main>
   );

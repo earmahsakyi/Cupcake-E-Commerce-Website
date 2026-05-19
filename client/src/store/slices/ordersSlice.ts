@@ -8,7 +8,7 @@ export const createOrder = createAsyncThunk(
     async (payload: CreateOrderPayload, {rejectWithValue} ) => {
         try {
             const res = await axiosInstance.post('/api/orders', payload);
-            return res.data.data as { orderId: number, reference: string}
+            return res.data.data as { orderId: number, reference: string, requiresOtp: boolean}
 
         } catch (err) {
             return rejectWithValue(getErrorMessage(err))
@@ -40,6 +40,19 @@ export const fetchAllOrders = createAsyncThunk(
     }
 )
 
+export const submitOtp = createAsyncThunk(
+  'orders/submitOtp',
+  async (payload: { otp: string; reference: string }, { rejectWithValue }) => {
+    // POST /api/orders/submit-otp
+    // returns { status: string }
+    try {
+        const res = await axiosInstance.post('/api/orders/submit-otp',payload);
+        return res.data.data.status as string
+    } catch (err) {
+        return rejectWithValue(getErrorMessage(err))
+    }
+})
+
 interface OrderState {
     currentOrder: Order | null;
     createdReference: string | null;
@@ -49,6 +62,9 @@ interface OrderState {
     error: string | null;
     allOrders: Order [];
     fetchAllStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
+    requiresOtp: boolean        // set when createOrder.fulfilled fires
+    otpStatus: 'idle' | 'loading' | 'succeeded' | 'failed'
+    otpError: string | null
 }
 
 const initialState: OrderState = {
@@ -59,7 +75,10 @@ const initialState: OrderState = {
     fetchStatus: 'idle',
     error: null,
     allOrders: [],
-    fetchAllStatus: 'idle'
+    fetchAllStatus: 'idle',
+    otpStatus: 'idle',
+    requiresOtp: false,
+    otpError: null
 
 }
 
@@ -72,7 +91,10 @@ const ordersSlice = createSlice({
             state.submitStatus = 'idle';
             state.createdReference = null;
             state.createdOrderId =  null;
-            state.error = null
+            state.error = null;
+            state.requiresOtp = false;
+            state.otpStatus = 'idle';
+            state.otpError = null;
         }
     },
     extraReducers: (builder) => {
@@ -84,7 +106,8 @@ const ordersSlice = createSlice({
         .addCase(createOrder.fulfilled, (state, action)=> {
             state.submitStatus = 'succeeded';
             state.createdOrderId = action.payload.orderId;
-            state.createdReference = action.payload.reference 
+            state.createdReference = action.payload.reference;
+            state.requiresOtp = action.payload.requiresOtp 
         })
         .addCase(createOrder.rejected, (state, action) => {
             state.submitStatus = 'failed';
@@ -113,8 +136,19 @@ const ordersSlice = createSlice({
         .addCase(fetchOrderById.rejected, (state, action) => {
             state.fetchStatus = 'failed';
             state.error = action.payload as string
-        });
-        
+        })
+        .addCase(submitOtp.pending, (state) => {
+            state.otpStatus = 'loading',
+            state.otpError = null
+        })
+        .addCase(submitOtp.fulfilled, (state, action) => {
+            state.otpStatus = 'succeeded';
+            state.requiresOtp = false;
+        })
+        .addCase(submitOtp.rejected, (state, action) => {
+            state.otpStatus = 'failed',
+            state.otpError = action.payload as string
+        })
     }
 });
 

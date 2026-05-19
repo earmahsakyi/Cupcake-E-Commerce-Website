@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import pool from "../config/db.js";
 import { asyncHandler } from "../middleware/asyncHandler.js";
 import { AppError } from "../middleware/errorHandler.js";
-import { CreateOrderBody, CartItem,OrderItemRow, Order } from "../types/order.types.js";
+import { CreateOrderBody, CartItem,OrderItemRow, Order,SubmitOtpBody } from "../types/order.types.js";
 import { generateOrderReference } from "../utils/helper.js";
 
 // Add this mapping at the top of the file
@@ -173,10 +173,7 @@ export const createOrder = asyncHandler(
                 full_response: data
             });
 
-            if (!data.status){
-                throw new AppError('Payment initialization failed', 502)
-            }
-
+          
             // Handle successful charge attempt (this is the key fix)
             if (data.message === 'Charge attempted') {
                 console.log('✅ Payment charge attempted successfully');
@@ -206,6 +203,9 @@ export const createOrder = asyncHandler(
                 }
             }
 
+            const paystackStatus = data.data?.status as string | undefined;
+            const requiresOtp = paystackStatus === 'send_otp';
+
             await connection.execute(
                 `INSERT INTO payments (order_id, paystack_reference, amount_pesewas, momo_network, phone, status)
                 VALUES (?, ?, ?, ?, ?, ?)`,
@@ -214,7 +214,7 @@ export const createOrder = asyncHandler(
 
 
             await connection.commit();
-            res.status(201).json({success: true, data: {orderId, reference}})
+            res.status(201).json({success: true, data: {orderId, reference, requiresOtp }})
 
         } catch(err) {
             await connection.rollback();
@@ -326,3 +326,31 @@ export const getAllOrders = asyncHandler(
 
     }
 );
+
+export const submitOtp = asyncHandler(
+    async (req:Request, res: Response) => {
+        const {otp, reference} = req.body as SubmitOtpBody ;
+
+        const response = await fetch('https://api.paystack.co/charge/submit_otp', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`
+        },
+        body: JSON.stringify({
+            reference: reference,
+            otp: otp
+        })
+    });
+    
+    const data = await response.json();
+
+    if(!data.status){
+        throw new AppError('Invalid OTP or OTP expired', 400)
+    };
+    const paystackStatus = data.data?.status;
+
+    res.status(200).json({ success: true, data: { status: paystackStatus }  })
+
+    }
+)
