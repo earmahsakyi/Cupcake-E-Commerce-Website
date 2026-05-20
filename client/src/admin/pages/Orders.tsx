@@ -78,7 +78,7 @@ const Orders = () => {
               <th className="px-5 py-3 text-left">Order ID</th>
               <th className="px-5 py-3 text-left">Customer</th>
               <th className="px-5 py-3 text-left">Phone</th>
-              <th className="px-5 py-3 text-left">Delivery</th>
+              <th className="px-5 py-3 text-left">Created At</th>
               <th className="px-5 py-3 text-left">Status</th>
               <th className="px-5 py-3 text-right">Total</th>
             </tr>
@@ -93,7 +93,7 @@ const Orders = () => {
                 </td>
                 <td className="px-5 py-3"><Link to={`/admin/orders/${o.id}`} className="text-foreground">{o.customer_name}</Link></td>
                 <td className="px-5 py-3 text-muted-foreground">{o.customer_phone}</td>
-                <td className="px-5 py-3 text-muted-foreground">{new Date(o.delivery_address || o.created_at).toLocaleDateString()}</td>
+                <td className="px-5 py-3 text-muted-foreground">{new Date(o.created_at).toLocaleDateString()}</td>
                 <td className="px-5 py-3"><StatusBadge status={o.status} /></td>
                 <td className="px-5 py-3 text-right font-semibold text-foreground">{formatPesewas(o.total_pesewas)}</td>
               </tr>
