@@ -30,10 +30,8 @@ const Login = () => {
       ).unwrap();
 
       await dispatch(loadAdmin());
-       setTimeout(()=> {
-         navigate("/admin");
-         toast.success(`Welcome back, ${result.name.split(" ")[0]}!`);
-      },1500);
+      toast.success(`Welcome back, ${result.name.split(" ")[0]}!`);
+      navigate("/admin");
     } catch (err) {
       if (err === 'LOCKED'){
         navigate(`/admin/locked?email=${encodeURIComponent(email)}`)

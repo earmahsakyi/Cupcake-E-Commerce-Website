@@ -70,7 +70,7 @@ export const registerUser = asyncHandler(
             res.cookie('token',token, {
                 httpOnly: true,
                 secure: true,
-                sameSite: 'none',
+                sameSite: 'strict',
                 maxAge: 1 * 24 * 60 * 60 * 1000
             }).json({
                 role: admin.role,
@@ -178,7 +178,7 @@ export const loginUser = asyncHandler(
                 res.cookie('token', token, {
                     httpOnly: true,
                     secure: true,
-                    sameSite: 'none',
+                    sameSite: 'strict',
                     maxAge: 1 * 24 * 60 * 60 * 1000
                 }).json({
                     role: existingAdmin.role,
