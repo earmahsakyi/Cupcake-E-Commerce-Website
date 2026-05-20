@@ -19,8 +19,10 @@ const mapToPaystackProvider = (network: string): string => {
 export const createOrder = asyncHandler(
     async (req: Request, res:Response) => {
 
-        const {customer_name, customer_phone, delivery_address, momo_network, items} = req.body as CreateOrderBody
+        const {customer_name, customer_phone, delivery_address, momo_network, items, notes, delivery_date} = req.body as CreateOrderBody
 
+        const cleanedNotes = notes?.trim() || null;
+        const dateOfDelivery = delivery_date || null;
         //validate items 
         if(!items || items.length === 0){
             throw new AppError('Order must have at least one item',400)
@@ -99,9 +101,9 @@ export const createOrder = asyncHandler(
         try {
             const reference = generateOrderReference();
             const[result]: any = await connection.execute(
-                `INSERT INTO orders(reference, customer_name, customer_phone, delivery_address, total_pesewas, status)
-                VALUES (?, ?, ?, ?, ?, ?)`,
-                [reference,customer_name,customer_phone,delivery_address,totalPesewas,'pending']
+                `INSERT INTO orders(reference, customer_name, customer_phone, delivery_address, total_pesewas, status,notes,delivery_date)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                [reference,customer_name,customer_phone,delivery_address,totalPesewas,'pending',cleanedNotes,dateOfDelivery]
             );
             
             const orderId = result.insertId;
@@ -250,7 +252,19 @@ export const getOrderById = asyncHandler(
             WHERE oi.order_id = ?`,
             [id]
         );
-
+        // Fetch slot flavors for each order item
+        const [slotFlavors]: any = await pool.query(
+            `SELECT bsf.order_item_id, bsf.slot_number, bsf.flavor
+            FROM box_slot_flavors bsf
+            INNER JOIN order_items oi ON bsf.order_item_id = oi.id
+            WHERE oi.order_id = ?`,
+            [id]
+        );
+        const slotFlavorsMap: Record<number, any[]> = slotFlavors.reduce((map: any, row: any) => {
+            if (!map[row.order_item_id]) map[row.order_item_id] = [];
+            map[row.order_item_id].push({ slot_number: row.slot_number, flavor: row.flavor });
+            return map;
+        }, {});
        
 
         const orderData: Order = {
@@ -263,6 +277,8 @@ export const getOrderById = asyncHandler(
             status: myOrder.status,
             is_urgent: myOrder.is_urgent,
             created_at: myOrder.created_at,
+            notes: myOrder.notes,
+            delivery_date: myOrder.delivery_date,
             items: orderItems.map((item: any) => ({
                 id: item.id,
                 product_id: item.product_id,
@@ -271,6 +287,7 @@ export const getOrderById = asyncHandler(
                 unit_price_pesewas: item.unit_price_pesewas,
                 size: item.size,
                 flavor_note: item.flavor_note,
+                slot_flavors: slotFlavorsMap[item.id] || [],
                 selected_flavors: item.selected_flavors ? JSON.parse(item.selected_flavors) : null
             }))
         }
@@ -297,6 +314,8 @@ export const getAllOrders = asyncHandler(
             `,
             
         );
+
+        
 
         const itemsMap: Record<number, any[]> = orderItems.reduce((map: any, row: any) => {
             if(!map[row.order_id]) map[row.order_id] = [];

@@ -10,6 +10,8 @@ export interface OrderRow {
     status: 'pending' | 'paid' | 'processing' | 'delivered' | 'cancelled';
     is_urgent: boolean;
     created_at: Date;
+    notes?: string | null;
+    delivery_date?: Date | null;
 }
 
 export interface OrderItemRow {
@@ -57,6 +59,8 @@ export interface Order {
     is_urgent: boolean;
     items: OrderItem[];
     created_at: Date;
+    notes?: string | null;
+    delivery_date?: Date | null;
 }
 
 // what comes in from the customer placing an order
@@ -77,6 +81,8 @@ export interface CreateOrderBody {
     customer_phone: string;
     delivery_address: string;
     momo_network: 'mtn' | 'tgo' | 'vod';
+    notes?: string | null;
+    delivery_date?: Date | null;
     items: CartItem[];
 }
 
