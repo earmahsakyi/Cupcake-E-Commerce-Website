@@ -105,7 +105,7 @@ const Checkout = () => {
       clear();
       navigate(`/order-success?id=${result.orderId}&reference=${result.reference}`);
       }
-    } catch (err: any) {
+    } catch (err) {
       toast({
         title: "Order failed",
         description: err || "Something went wrong. Please try again.",
@@ -125,7 +125,7 @@ const Checkout = () => {
     await dispatch(submitOtp({ otp: otpValue, reference: createdReference })).unwrap();
     clear();
     navigate(`/order-success?id=${createdOrderId}`);
-  } catch (err: any) {
+  } catch (err) {
     toast({
       title: "OTP failed",
       description: err || "Invalid or expired OTP. Please try again.",

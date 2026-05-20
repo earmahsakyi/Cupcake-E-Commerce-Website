@@ -337,7 +337,7 @@ const ProductDetail = () => {
               <motion.button
                 onClick={handleAdd}
                 whileTap={{ scale: 0.97 }}
-                className="group inline-flex h-14 flex-1 items-center justify-center gap-2 rounded-full bg-gradient-primary px-8 text-base font-semibold text-primary-foreground shadow-soft hover:scale-[1.02]"
+                className="group inline-flex h-14 py-3 items-center justify-center gap-2 rounded-full bg-gradient-primary px-8 text-base font-semibold text-primary-foreground shadow-soft hover:scale-[1.02]"
               >
                 <AnimatePresence mode="wait" initial={false}>
                   {added ? (

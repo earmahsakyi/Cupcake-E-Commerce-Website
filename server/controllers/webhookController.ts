@@ -58,6 +58,13 @@ export const webhook = asyncHandler(
             WHERE reference = ?`,
             [reference]
         );
+        await pool.query(
+        `INSERT INTO transactions (type, amount_pesewas, description, source, order_id)
+        SELECT 'revenue', total_pesewas, CONCAT('Payment for order ', reference), 'order', id
+        FROM orders
+        WHERE reference = ?`,
+        [reference]
+    );
 
    
         await sendOrderConfirmationSMS(order.customer_phone, amount, order.customer_name, reference);

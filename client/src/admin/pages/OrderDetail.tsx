@@ -159,7 +159,7 @@ const OrderDetail = () => {
                         <div className="mt-1">
                           <p className="text-xs font-medium text-muted-foreground">Slot Flavors:</p>
                           <ul className="text-xs text-muted-foreground pl-4 list-disc mt-0.5 space-y-0.5">
-                            {it.slot_flavors.map((slot: any, idx: number) => (
+                            {it.slot_flavors.map((slot, idx: number) => (
                               <li key={idx}>
                                 Slot {slot.slot_number}: <span className="capitalize">{slot.flavor}</span>
                               </li>

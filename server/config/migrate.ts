@@ -60,7 +60,9 @@ const runMigrations = async (): Promise<void> => {
             total_pesewas INT NOT NULL,
             status ENUM('pending', 'paid', 'processing', 'delivered', 'cancelled') NOT NULL,
             is_urgent BOOLEAN NOT NULL DEFAULT FALSE,
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            delivery_date DATE NULL,
+            notes TEXT NULL,
         )`;
 
     const createOrderItems = `
@@ -98,14 +100,14 @@ const runMigrations = async (): Promise<void> => {
             FOREIGN KEY (order_item_id) REFERENCES order_items(id) ON DELETE CASCADE
         )`;
 
-        //vodaphone has been changed to telecel but i dont know if paystack used vodaphone
+        
     const createPayments = `
         CREATE TABLE IF NOT EXISTS payments (
             id INT AUTO_INCREMENT PRIMARY KEY,
             order_id INT NOT NULL,
             paystack_reference VARCHAR(100) NOT NULL UNIQUE,
             amount_pesewas INT NOT NULL,
-            momo_network ENUM('mtn', 'vod' 'tgo') NOT NULL,
+            momo_network ENUM('mtn', 'vod', 'tgo') NOT NULL,
             phone VARCHAR(20) NOT NULL,
             status ENUM('pending', 'success', 'failed') NOT NULL DEFAULT 'pending',
             paid_at DATETIME NULL,
