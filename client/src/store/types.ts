@@ -50,6 +50,8 @@ export interface Order {
   is_urgent: boolean;
   items: OrderItem[];
   created_at: string;
+  notes?: string | null;
+  delivery_date?: Date | null;
 }
 
 export interface CreateOrderPayload {
@@ -57,6 +59,8 @@ export interface CreateOrderPayload {
   customer_phone: string;
   delivery_address: string;
   momo_network: "mtn" | "telecel" | "vodafone" | "airteltigo"
+  notes?: string | null;
+  delivery_date?: Date | null;
   items: CartItemPayload[];
 }
 

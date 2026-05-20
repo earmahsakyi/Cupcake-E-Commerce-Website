@@ -138,7 +138,7 @@ const ordersSlice = createSlice({
             state.error = action.payload as string
         })
         .addCase(submitOtp.pending, (state) => {
-            state.otpStatus = 'loading',
+            state.otpStatus = 'loading';
             state.otpError = null
         })
         .addCase(submitOtp.fulfilled, (state, action) => {
@@ -146,7 +146,7 @@ const ordersSlice = createSlice({
             state.requiresOtp = false;
         })
         .addCase(submitOtp.rejected, (state, action) => {
-            state.otpStatus = 'failed',
+            state.otpStatus = 'failed';
             state.otpError = action.payload as string
         })
     }

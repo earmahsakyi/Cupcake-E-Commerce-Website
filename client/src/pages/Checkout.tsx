@@ -19,13 +19,21 @@ const Checkout = () => {
   const { submitStatus, error, requiresOtp, createdReference, createdOrderId, otpStatus, otpError } 
     = useAppSelector(state => state.orders);
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<{
+    name:string,
+    phone:string,
+    address: string,
+    deliveryDate: string,
+    notes: string,
+    network: "mtn" | "telecel" | "vodafone" | "airteltigo"
+
+  }>({
     name: "",
     phone: "",
     address: "",
     deliveryDate: "",
     notes: "",
-    network: "mtn" as "mtn" | "telecel" | "vodafone" | "airteltigo"
+    network: "mtn"  
   });
 
   useEffect(() => {
@@ -66,6 +74,8 @@ const Checkout = () => {
       customer_phone: form.phone,
       delivery_address: form.address,
       momo_network: form.network,
+      notes: form.notes || null,
+      delivery_date: form.deliveryDate ? new Date(form.deliveryDate) : null,
       items: items.map((item) => {
         const base = {
           product_id: Number(item.cakeId),
@@ -313,45 +323,106 @@ const Checkout = () => {
         </div>
       </section>
       {requiresOtp && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-sm rounded-3xl bg-card p-8 shadow-card"
-          >
-            <h2 className="font-serif text-2xl text-foreground">Enter OTP</h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              An OTP was sent to <span className="font-semibold text-foreground">{form.phone}</span>. Enter it below to confirm your payment.
-            </p>
-
-            <input
-              type="number"
-              maxLength={6}
-              value={otpValue}
-              onChange={(e) => setOtpValue(e.target.value)}
-              className="input-base mt-5 text-center text-xl tracking-widest"
-              placeholder="123456"
-              autoFocus
-            />
-
-            {otpError && (
-              <p className="mt-2 text-sm text-destructive">{otpError}</p>
-            )}
-
-            <button
-              onClick={handleOtpSubmit}
-              disabled={otpStatus === 'loading'}
-              className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-full bg-gradient-primary text-sm font-semibold text-primary-foreground shadow-soft disabled:opacity-70"
-            >
-              {otpStatus === 'loading' ? "Verifying…" : "Confirm Payment"}
-            </button>
-          </motion.div>
-        </div>
+          <OtpModal
+          phone={form.phone}
+          network={form.network}
+          otpValue={otpValue}
+          setOtpValue={setOtpValue}
+          otpError={otpError}
+          otpStatus={otpStatus}
+          onSubmit={handleOtpSubmit}
+        />
       )}
       <Footer />
     </main>
   );
 };
+
+const OtpModal = ({ phone, network, otpValue, setOtpValue, otpError, otpStatus, onSubmit }: {
+  phone: string;
+  network: string;
+  otpValue: string;
+  setOtpValue: (v: string) => void;
+  otpError: string | null;
+  otpStatus: string;
+  onSubmit: () => void;
+}) => {
+  const [showFallback, setShowFallback] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowFallback(true), 30000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const networkName = network === 'telecel' ? 'Telecel' : 'AirtelTigo';
+  const needsFallback = network === 'telecel' || network === 'airteltigo';
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="w-full max-w-sm rounded-3xl bg-card p-8 shadow-card"
+      >
+        <h2 className="font-serif text-2xl text-foreground">Enter OTP</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          An OTP was sent to{" "}
+          <span className="font-semibold text-foreground">{phone}</span>. Enter
+          it below to confirm your payment.
+        </p>
+
+        <input
+          type="number"
+          maxLength={6}
+          value={otpValue}
+          onChange={(e) => setOtpValue(e.target.value)}
+          className="input-base mt-5 text-center text-xl tracking-widest"
+          placeholder="123456"
+          autoFocus
+        />
+
+        {otpError && (
+          <p className="mt-2 text-sm text-destructive">{otpError}</p>
+        )}
+
+        <button
+          onClick={onSubmit}
+          disabled={otpStatus === "loading"}
+          className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-full bg-gradient-primary text-sm font-semibold text-primary-foreground shadow-soft disabled:opacity-70"
+        >
+          {otpStatus === "loading" ? "Verifying…" : "Confirm Payment"}
+        </button>
+
+        {/* Fallback — shows after 30s for Telecel/AirtelTigo only */}
+        {showFallback && needsFallback && (
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm"
+          >
+            <p className="font-semibold text-amber-800">
+              Not receiving your OTP?
+            </p>
+            <p className="mt-1 text-amber-700">
+              There may be a network delay with {networkName} right now. You
+              can:
+            </p>
+            <ul className="mt-2 space-y-1 text-amber-700 list-disc list-inside">
+              <li>Wait a few more minutes and try again</li>
+              <li>Call us on <strong><a href="tel:0551745309">0551745309</a></strong> and we'll confirm your order manually</li>
+              <li>
+                Place a new order using an{" "}
+                <span className="font-semibold">MTN MoMo</span> number instead
+              </li>
+            </ul>
+          </motion.div>
+        )}
+      </motion.div>
+    </div>
+  );
+};
+
+
 
 const Field = ({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) => (
   <label className="block">

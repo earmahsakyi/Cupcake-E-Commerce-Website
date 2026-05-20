@@ -220,6 +220,15 @@ const OrderDetail = () => {
               </dl>
             </div>
 
+            {/* Order Info */}
+          <div className="rounded-2xl bg-card border border-border p-5">
+            <h2 className="font-serif text-lg text-foreground">Order info</h2>
+            <dl className="mt-3 space-y-2 text-sm">
+              <Row label="Delivery date" value={order.delivery_date ? new Date(order.delivery_date).toLocaleDateString() : '—'} />
+              <Row label="Notes" value={order.notes || '—'} />
+            </dl>
+          </div>
+
             <div className="rounded-2xl bg-card border border-border p-5">
               <h2 className="font-serif text-lg text-foreground">Payment</h2>
               <dl className="mt-3 space-y-2 text-sm">
