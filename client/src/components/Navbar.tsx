@@ -33,7 +33,7 @@ const Navbar = () => {
           <a href={link("reviews")} className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Reviews</a>
           <Link to="/cart" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Cart</Link>
           <Button variant="default" size="sm" asChild>
-          <Link to="admin/login">Staff login</Link>
+          <Link to="/admin/login">Staff login</Link>
         </Button>
         </nav>
         {/* <button
@@ -63,7 +63,7 @@ const Navbar = () => {
           <a href={link("reviews")} onClick={()=> setIsOpen(false)} className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Reviews</a>
           <Link to="/cart" onClick={()=> setIsOpen(false)} className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Cart</Link>
           <Button variant="default" size="sm" asChild>
-          <Link to="admin/login">Staff login</Link>
+          <Link to="/admin/login">Staff login</Link>
         </Button>
 
 
