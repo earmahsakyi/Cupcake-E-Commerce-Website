@@ -290,6 +290,7 @@ export const getOrderById = asyncHandler(
                 slot_flavors: slotFlavorsMap[item.id] || [],
                 selected_flavors: (() => {
                     if (!item.selected_flavors) return null;
+                    if (Array.isArray(item.selected_flavors)) return item.selected_flavors;
                     try {
                         return JSON.parse(item.selected_flavors);
                     } catch {
@@ -338,6 +339,7 @@ export const getAllOrders = asyncHandler(
                     flavor_note: row.flavor_note,
                     selected_flavors: (() => {
                         if (!row.selected_flavors) return null;
+                        if (Array.isArray(row.selected_flavors)) return row.selected_flavors;
                         try {
                             return JSON.parse(row.selected_flavors);
                         } catch {
