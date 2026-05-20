@@ -1,13 +1,18 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, AlertTriangle, Printer, MessageSquare, Send } from "lucide-react";
+import { ArrowLeft, AlertTriangle, Printer, MessageSquare, Send, Loader2 } from "lucide-react";
 import AdminLayout from "@/admin/AdminLayout";
 import StatusBadge from "@/admin/components/StatusBadge";
 
 import { OrderStatus } from "@/store/types";
 import { useAppDispatch, useAppSelector } from "@/store/index";
 import { formatPesewas } from "@/lib/utils";
-import { fetchOrderById } from "@/store/slices/ordersSlice";
+import {
+    fetchOrderById,
+    updateOrderStatus,
+    toggleUrgent,
+    clearMutateError,
+} from "@/store/slices/ordersSlice";
 
 import { toast } from "sonner";
 
@@ -23,7 +28,8 @@ const OrderDetail = () => {
   const { id = "" } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { currentOrder: order, fetchStatus } = useAppSelector((state) => state.orders);
+  const { currentOrder: order, fetchStatus, mutating, mutateError }
+    = useAppSelector((state) => state.orders);
 
   const [smsOpen, setSmsOpen] = useState(false);
   const [smsText, setSmsText] = useState("");
@@ -31,6 +37,14 @@ const OrderDetail = () => {
   useEffect(() => {
     if (id) dispatch(fetchOrderById(Number(id)));
   }, [dispatch, id]);
+
+  // Show mutation errors as toasts
+  useEffect(() => {
+    if (mutateError) {
+      toast.error(mutateError);
+      dispatch(clearMutateError());
+    }
+  }, [mutateError, dispatch]);
 
   if (fetchStatus === 'loading') return (
     <AdminLayout>
@@ -51,20 +65,29 @@ const OrderDetail = () => {
     );
   }
 
-  const setStatus = (s: OrderStatus) => {
-    // TODO: wire to PATCH /api/orders/${id}/status
-    toast.success(`Status updated to ${s} (coming soon)`);
+  const setStatus = async (s: OrderStatus) => {
+    if (s === order.status) return; // no-op if same status
+    try {
+      await dispatch(updateOrderStatus({ id: Number(id), status: s })).unwrap();
+      toast.success(`Status updated to "${s}"`);
+    } catch {
+      // error already handled by mutateError effect above
+    }
   };
 
-  const toggleUrgent = () => {
-    // TODO: wire to PATCH /api/orders/${id}/urgent
-    toast.info('Urgent toggle coming soon');
+  const handleToggleUrgent = async () => {
+    try {
+      await dispatch(toggleUrgent(Number(id))).unwrap();
+      toast.success(order.is_urgent ? 'Urgent flag removed' : 'Order marked as urgent');
+    } catch {
+      // error already handled by mutateError effect above
+    }
   };
 
   const sendSms = (text: string) => {
     if (!text.trim()) return;
-    // TODO: wire to SMS endpoint
-    toast.info(`SMS sending coming soon`);
+    // TODO: wire to SMS endpoint (Task 4)
+    toast.info(`SMS sending coming in Task 4`);
     setSmsOpen(false);
     setSmsText("");
   };
@@ -106,10 +129,14 @@ const OrderDetail = () => {
 
           <div className="no-print flex flex-wrap gap-2">
             <button 
-              onClick={toggleUrgent} 
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground hover:bg-secondary"
+              onClick={handleToggleUrgent}
+              disabled={mutating}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground hover:bg-secondary disabled:opacity-60"
             >
-              <AlertTriangle className="h-4 w-4" /> 
+              {mutating
+                ? <Loader2 className="h-4 w-4 animate-spin" />
+                : <AlertTriangle className="h-4 w-4" />
+              }
               {order.is_urgent ? "Remove urgent" : "Mark urgent"}
             </button>
             <button 
@@ -129,7 +156,8 @@ const OrderDetail = () => {
 
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="space-y-6 lg:col-span-2">
-            {/* ==================== ITEMS SECTION ==================== */}
+
+            {/* Items */}
             <div className="rounded-2xl bg-card border border-border p-5">
               <h2 className="font-serif text-lg text-foreground">Items</h2>
               <ul className="mt-3 divide-y divide-border">
@@ -139,22 +167,16 @@ const OrderDetail = () => {
                       <p className="font-medium text-foreground">
                         {it.quantity} × {it.product_name}
                       </p>
-
-                      {/* Size */}
                       {it.size && (
                         <p className="text-xs text-muted-foreground mt-0.5">
                           Size: <span className="capitalize">{it.size}</span>
                         </p>
                       )}
-
-                      {/* Selected Flavors (Cupcakes) */}
                       {it.selected_flavors && it.selected_flavors.length > 0 && (
                         <p className="text-xs text-muted-foreground mt-0.5">
                           Flavors: <span className="capitalize">{it.selected_flavors.join(", ")}</span>
                         </p>
                       )}
-
-                      {/* Slot Flavors (Boxes) */}
                       {it.slot_flavors && it.slot_flavors.length > 0 && (
                         <div className="mt-1">
                           <p className="text-xs font-medium text-muted-foreground">Slot Flavors:</p>
@@ -167,28 +189,24 @@ const OrderDetail = () => {
                           </ul>
                         </div>
                       )}
-
-                      {/* Flavor Note */}
                       {it.flavor_note && (
                         <p className="text-xs text-rose-600 mt-1.5 italic">
                           Note: "{it.flavor_note}"
                         </p>
                       )}
                     </div>
-
                     <p className="font-semibold text-foreground whitespace-nowrap self-start">
                       {formatPesewas(it.unit_price_pesewas * it.quantity)}
                     </p>
                   </li>
                 ))}
               </ul>
-
               <dl className="mt-4 space-y-1.5 border-t border-border pt-4 text-sm">
                 <Row label="Total" value={formatPesewas(order.total_pesewas)} bold />
               </dl>
             </div>
 
-            {/* Status Update */}
+            {/* Status update */}
             <div className="no-print rounded-2xl bg-card border border-border p-5">
               <h2 className="font-serif text-lg text-foreground">Update status</h2>
               <div className="mt-3 flex flex-wrap gap-2">
@@ -196,20 +214,26 @@ const OrderDetail = () => {
                   <button
                     key={s}
                     onClick={() => setStatus(s)}
-                    className={`rounded-full px-4 py-2 text-sm font-semibold border transition-colors ${
+                    disabled={mutating}
+                    className={`rounded-full px-4 py-2 text-sm font-semibold border transition-colors disabled:opacity-60 ${
                       order.status === s
                         ? "bg-primary text-primary-foreground border-primary"
                         : "bg-card text-foreground border-border hover:bg-secondary"
                     }`}
                   >
-                    {s}
+                    {mutating && order.status !== s ? s : s}
                   </button>
                 ))}
               </div>
+              {mutating && (
+                <p className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <Loader2 className="h-3 w-3 animate-spin" /> Saving…
+                </p>
+              )}
             </div>
           </div>
 
-          {/* Customer & Payment Info */}
+          {/* Sidebar */}
           <div className="space-y-6">
             <div className="rounded-2xl bg-card border border-border p-5">
               <h2 className="font-serif text-lg text-foreground">Customer</h2>
@@ -220,14 +244,16 @@ const OrderDetail = () => {
               </dl>
             </div>
 
-            {/* Order Info */}
-          <div className="rounded-2xl bg-card border border-border p-5">
-            <h2 className="font-serif text-lg text-foreground">Order info</h2>
-            <dl className="mt-3 space-y-2 text-sm">
-              <Row label="Delivery date" value={order.delivery_date ? new Date(order.delivery_date).toLocaleDateString() : '—'} />
-              <Row label="Notes" value={order.notes || '—'} />
-            </dl>
-          </div>
+            <div className="rounded-2xl bg-card border border-border p-5">
+              <h2 className="font-serif text-lg text-foreground">Order info</h2>
+              <dl className="mt-3 space-y-2 text-sm">
+                <Row
+                  label="Delivery date"
+                  value={order.delivery_date ? new Date(order.delivery_date).toLocaleDateString() : '—'}
+                />
+                <Row label="Notes" value={order.notes || '—'} />
+              </dl>
+            </div>
 
             <div className="rounded-2xl bg-card border border-border p-5">
               <h2 className="font-serif text-lg text-foreground">Payment</h2>
@@ -242,8 +268,14 @@ const OrderDetail = () => {
 
       {/* SMS Modal */}
       {smsOpen && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-foreground/40 p-4" onClick={() => setSmsOpen(false)}>
-          <div className="w-full max-w-lg rounded-3xl bg-card p-6 shadow-card" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="fixed inset-0 z-50 grid place-items-center bg-foreground/40 p-4"
+          onClick={() => setSmsOpen(false)}
+        >
+          <div
+            className="w-full max-w-lg rounded-3xl bg-card p-6 shadow-card"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3 className="font-serif text-xl text-foreground">Send SMS to {order.customer_name}</h3>
             <p className="text-sm text-muted-foreground">{order.customer_phone}</p>
 
@@ -272,14 +304,14 @@ const OrderDetail = () => {
             />
 
             <div className="mt-4 flex justify-end gap-2">
-              <button 
-                onClick={() => setSmsOpen(false)} 
+              <button
+                onClick={() => setSmsOpen(false)}
                 className="rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground hover:bg-secondary"
               >
                 Cancel
               </button>
-              <button 
-                onClick={() => sendSms(smsText)} 
+              <button
+                onClick={() => sendSms(smsText)}
                 className="inline-flex items-center gap-1.5 rounded-full bg-gradient-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-soft"
               >
                 <Send className="h-4 w-4" /> Send

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createOrder, getAllOrders, getOrderById, submitOtp } from "../controllers/orderController.js";
+import { createOrder, getAllOrders, getOrderById, submitOtp,updateOrderStatus,toggleUrgent } from "../controllers/orderController.js";
 import { validateBody } from "../middleware/validate.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -13,6 +13,8 @@ router.post(
 router.post('/submit-otp', validateBody(['otp','reference']),submitOtp);
 router.get('/', protect, getAllOrders);
 router.get('/:id', getOrderById);
+router.patch('/:id/status', protect,validateBody(['status']), updateOrderStatus);
+router.patch('/:id/urgent', protect, toggleUrgent);
 
 
 export default router;

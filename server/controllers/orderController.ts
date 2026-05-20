@@ -391,3 +391,50 @@ export const submitOtp = asyncHandler(
 
     }
 )
+
+export const updateOrderStatus = asyncHandler(
+    async (req: Request, res: Response) => {
+        const { id } = req.params;
+        const { status } = req.body;
+ 
+        const validStatuses = ['pending', 'paid', 'processing', 'delivered', 'cancelled'];
+        if (!status || !validStatuses.includes(status)) {
+            throw new AppError(`Invalid status. Must be one of: ${validStatuses.join(', ')}`, 400);
+        }
+ 
+        const [rows]: any = await pool.query(
+            `SELECT id FROM orders WHERE id = ?`, [id]
+        );
+        if (!rows.length) throw new AppError('Order not found', 404);
+ 
+        await pool.execute(
+            `UPDATE orders SET status = ? WHERE id = ?`,
+            [status, id]
+        );
+ 
+        res.status(200).json({ success: true, data: { id: Number(id), status } });
+    }
+);
+ 
+// ─── Admin: Toggle urgent flag 
+ 
+export const toggleUrgent = asyncHandler(
+    async (req: Request, res: Response) => {
+        const { id } = req.params;
+ 
+        const [rows]: any = await pool.query(
+            `SELECT id, is_urgent FROM orders WHERE id = ?`, [id]
+        );
+        if (!rows.length) throw new AppError('Order not found', 404);
+ 
+        // Flip whatever the current value is
+        const newUrgent = !rows[0].is_urgent;
+ 
+        await pool.execute(
+            `UPDATE orders SET is_urgent = ? WHERE id = ?`,
+            [newUrgent, id]
+        );
+ 
+        res.status(200).json({ success: true, data: { id: Number(id), is_urgent: newUrgent } });
+    }
+);

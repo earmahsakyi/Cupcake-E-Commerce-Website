@@ -13,11 +13,11 @@ const statuses: ("All" | OrderStatus)[] = ["All", "pending", "paid", "processing
 const Orders = () => {
   const dispatch = useAppDispatch();
 
-  const {allOrders, fetchAllStatus} = useAppSelector((state) => state.orders);
+  const {list, listStatus} = useAppSelector((state) => state.orders);
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState<"All" | OrderStatus>("All");
 
-  const filtered = allOrders.filter((o) => {
+  const filtered = list.filter((o) => {
     if (filter !== "All" && o.status !== filter) return false;
     if (q) {
       const s = q.toLowerCase();
@@ -30,7 +30,7 @@ const Orders = () => {
     dispatch(fetchAllOrders())
   },[dispatch]);
 
-  if (fetchAllStatus === 'loading') return (
+  if (listStatus === 'loading') return (
     <AdminLayout>
       <div className="flex h-64 items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-pink-500 border-t-transparent"/>
@@ -44,7 +44,7 @@ const Orders = () => {
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-serif text-2xl text-foreground sm:text-3xl">Orders</h1>
-          <p className="text-sm text-muted-foreground">{filtered.length} of {allOrders.length} orders</p>
+          <p className="text-sm text-muted-foreground">{filtered.length} of {list.length} orders</p>
         </div>
         <div className="relative flex gap-3">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
