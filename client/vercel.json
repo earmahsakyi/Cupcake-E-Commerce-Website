@@ -11,6 +11,10 @@
     {
       "source": "/(.*)",
       "destination": "/index.html"
+    },
+    { 
+      "source": "/api/:path*", 
+      "destination": "https://cupcake-e-commerce-website-production.up.railway.app/api/:path*" 
     }
   ]
 }

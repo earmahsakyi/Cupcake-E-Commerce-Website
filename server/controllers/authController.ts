@@ -70,7 +70,7 @@ export const registerUser = asyncHandler(
             res.cookie('token',token, {
                 httpOnly: true,
                 secure: true,
-                sameSite: 'strict',
+                sameSite: 'lax',
                 maxAge: 1 * 24 * 60 * 60 * 1000
             }).json({
                 role: admin.role,
@@ -178,7 +178,7 @@ export const loginUser = asyncHandler(
                 res.cookie('token', token, {
                     httpOnly: true,
                     secure: true,
-                    sameSite: 'strict',
+                    sameSite: 'lax',
                     maxAge: 1 * 24 * 60 * 60 * 1000
                 }).json({
                     role: existingAdmin.role,
@@ -411,7 +411,7 @@ export const logout = asyncHandler(
         res.clearCookie('token', {
             httpOnly: true,
             secure: true,
-            sameSite: 'none'
+            sameSite: 'lax'
         });
         res.status(200).json({ success: true, message: 'Logged out successfully' });
     }
