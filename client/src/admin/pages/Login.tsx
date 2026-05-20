@@ -29,7 +29,7 @@ const Login = () => {
         loginAdmin({ email: email.trim(), password })
       ).unwrap();
 
-      await dispatch(loadAdmin());
+      // await dispatch(loadAdmin());
       toast.success(`Welcome back, ${result.name.split(" ")[0]}!`);
       navigate("/admin");
     } catch (err) {
