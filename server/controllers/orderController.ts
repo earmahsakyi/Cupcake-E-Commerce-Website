@@ -288,7 +288,15 @@ export const getOrderById = asyncHandler(
                 size: item.size,
                 flavor_note: item.flavor_note,
                 slot_flavors: slotFlavorsMap[item.id] || [],
-                selected_flavors: item.selected_flavors ? JSON.parse(item.selected_flavors) : null
+                selected_flavors: (() => {
+                    if (!item.selected_flavors) return null;
+                    try {
+                        return JSON.parse(item.selected_flavors);
+                    } catch {
+                        // old data stored as comma-separated string
+                        return item.selected_flavors.split(',').map((s: string) => s.trim());
+                    }
+                })(),
             }))
         }
 
@@ -328,7 +336,15 @@ export const getAllOrders = asyncHandler(
                     unit_price_pesewas: row.unit_price_pesewas,
                     size: row.size,
                     flavor_note: row.flavor_note,
-                    selected_flavors: row.selected_flavors ? JSON.parse(row.selected_flavors) : null
+                    selected_flavors: (() => {
+                        if (!row.selected_flavors) return null;
+                        try {
+                            return JSON.parse(row.selected_flavors);
+                        } catch {
+                            // old data stored as comma-separated string
+                            return row.selected_flavors.split(',').map((s: string) => s.trim());
+                        }
+                    })()
                 }
             )
             return map
