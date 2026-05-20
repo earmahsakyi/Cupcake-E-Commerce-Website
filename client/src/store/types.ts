@@ -60,7 +60,7 @@ export interface CreateOrderPayload {
   delivery_address: string;
   momo_network: "mtn" | "telecel" | "vodafone" | "airteltigo"
   notes?: string | null;
-  delivery_date?: Date | null;
+  delivery_date?: string | null;
   items: CartItemPayload[];
 }
 

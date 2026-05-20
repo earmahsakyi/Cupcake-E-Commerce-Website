@@ -75,7 +75,7 @@ const Checkout = () => {
       delivery_address: form.address,
       momo_network: form.network,
       notes: form.notes || null,
-      delivery_date: form.deliveryDate ? new Date(form.deliveryDate) : null,
+      delivery_date: form.deliveryDate || null,
       items: items.map((item) => {
         const base = {
           product_id: Number(item.cakeId),
