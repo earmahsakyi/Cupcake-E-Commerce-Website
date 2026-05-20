@@ -29,9 +29,11 @@ const Login = () => {
         loginAdmin({ email: email.trim(), password })
       ).unwrap();
 
-      // await dispatch(loadAdmin());
-      toast.success(`Welcome back, ${result.name.split(" ")[0]}!`);
-      navigate("/admin");
+      await dispatch(loadAdmin());
+       setTimeout(()=> {
+         navigate("/admin");
+         toast.success(`Welcome back, ${result.name.split(" ")[0]}!`);
+      },1500);
     } catch (err) {
       if (err === 'LOCKED'){
         navigate(`/admin/locked?email=${encodeURIComponent(email)}`)
