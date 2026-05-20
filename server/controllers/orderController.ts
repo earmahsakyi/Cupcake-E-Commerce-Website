@@ -400,20 +400,45 @@ export const updateOrderStatus = asyncHandler(
         const validStatuses = ['pending', 'paid', 'processing', 'delivered', 'cancelled'];
         if (!status || !validStatuses.includes(status)) {
             throw new AppError(`Invalid status. Must be one of: ${validStatuses.join(', ')}`, 400);
-        }
- 
-        const [rows]: any = await pool.query(
-            `SELECT id FROM orders WHERE id = ?`, [id]
-        );
+        };
+
+        const conn = await pool.getConnection();
+        try {
+        await conn.beginTransaction();
+
+        const [rows]: any = await conn.query(
+                `SELECT id, status FROM orders WHERE id = ?`, [id]
+            );
         if (!rows.length) throw new AppError('Order not found', 404);
- 
-        await pool.execute(
-            `UPDATE orders SET status = ? WHERE id = ?`,
-            [status, id]
+
+        await conn.execute(`UPDATE orders SET status = ? WHERE id = ?`, [status, id]);
+
+        if (rows[0].status !== 'paid' && status === 'paid') {
+        await conn.execute(
+            `UPDATE payments SET status = 'success', paid_at = NOW() WHERE order_id = ?`, [id]
         );
- 
-        res.status(200).json({ success: true, data: { id: Number(id), status } });
+        const [existing]: any = await conn.query(
+            `SELECT id FROM transactions WHERE order_id = ? AND type = 'revenue'`, [id]
+        );
+        if (!existing.length) {
+            await conn.query(
+                `INSERT INTO transactions (type, amount_pesewas, description, source, order_id)
+                SELECT 'revenue', total_pesewas, CONCAT('Payment for order ', reference), 'order', id
+                FROM orders WHERE id = ?`, [id]
+            );
+        }
     }
+
+    await conn.commit();
+    res.status(200).json({ success: true, data: { id: Number(id), status } });
+
+    } catch (err) {
+        await conn.rollback();
+        throw err;
+    } finally {
+        conn.release();
+    }
+}
 );
  
 // ─── Admin: Toggle urgent flag 
