@@ -43,18 +43,18 @@ function buildMonthlySeries(orders: Order[]) {
 
 const Overview = () => {
   const dispatch = useAppDispatch();
-  const {allOrders, fetchAllStatus} = useAppSelector((state) => state.orders);
+  const {list, listStatus} = useAppSelector((state) => state.orders);
   const today = new Date().toISOString().slice(0, 10);
 
   const totals = {
-    orders: allOrders.length,
-    revenue: allOrders.filter((o) => o.status === "paid").reduce((s, o) => s + o.total_pesewas, 0),
-    today: allOrders.filter((o) => new Date(o.created_at).toISOString().slice(0, 10) === today).length,
-    pending: allOrders.filter((o) => o.status === "pending").length,
-    delivered: allOrders.filter((o) => o.status === "delivered").length,
+    orders: list.length,
+    revenue: list.filter((o) => o.status === "paid").reduce((s, o) => s + o.total_pesewas, 0),
+    today: list.filter((o) => new Date(o.created_at).toISOString().slice(0, 10) === today).length,
+    pending: list.filter((o) => o.status === "pending").length,
+    delivered: list.filter((o) => o.status === "delivered").length,
   };
 
-  const monthly = buildMonthlySeries(allOrders);
+  const monthly = buildMonthlySeries(list);
   const hasData = monthly.some((m) => m.orders > 0 || m.revenue > 0);
 
   const cards = [
@@ -69,7 +69,7 @@ const Overview = () => {
       dispatch(fetchAllOrders())
     },[dispatch]);
 
-     if (fetchAllStatus === 'loading') return (
+     if (listStatus === 'loading') return (
     <AdminLayout>
       <div className="flex h-64 items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-pink-500 border-t-transparent"/>
@@ -186,7 +186,7 @@ const Overview = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {allOrders.slice(0, 6).map((o) => (
+              {list.slice(0, 6).map((o) => (
                 <tr key={o.id} className="hover:bg-secondary/30">
                   <td className="px-5 py-3 font-medium text-foreground">
                     <Link to={`/admin/orders/${o.id}`} className="hover:text-primary">
@@ -199,7 +199,7 @@ const Overview = () => {
                   <td className="px-5 py-3 text-right font-semibold text-foreground">{formatPesewas(o.total_pesewas)}</td>
                 </tr>
               ))}
-              {allOrders.length === 0 && (
+              {list.length === 0 && (
                 <tr><td colSpan={5} className="px-5 py-10 text-center text-muted-foreground">No orders yet.</td></tr>
               )}
             </tbody>
