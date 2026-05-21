@@ -64,7 +64,7 @@ const Checkout = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (!form.name.trim() || !form.phone.trim() || !form.address.trim()) {
+    if (!form.name.trim() || !form.phone.trim() || !form.address.trim() || !form.deliveryDate.trim()) {
       toast({ title: "Missing details", description: "Please fill all required fields.", variant: "destructive" });
       return;
     }
@@ -118,7 +118,7 @@ const Checkout = () => {
     } catch (err) {
       toast({
         title: "Order failed",
-        description: err || "Something went wrong. Please try again.",
+        description: err as string || "Something went wrong. Please try again.",
         variant: "destructive",
       });
     }
@@ -245,7 +245,6 @@ const Checkout = () => {
               >
               <option value="mtn">MTN Mobile Money</option>
               <option value="telecel">Telecel Cash</option>
-              <option value="vodafone">Vodafone Cash</option>
               <option value="airteltigo">AirtelTigo Money</option>
               </select>
             </Field>
@@ -332,6 +331,7 @@ const Checkout = () => {
           otpStatus={otpStatus}
           onSubmit={handleOtpSubmit}
           total={total}
+          onClear={clear}
         />
       )}
       <Footer />
@@ -339,7 +339,7 @@ const Checkout = () => {
   );
 };
 
-const OtpModal = ({ phone, network, otpValue, setOtpValue, otpError, otpStatus, onSubmit, total }: {
+const OtpModal = ({ phone, network, otpValue, setOtpValue, otpError, otpStatus, onSubmit, total, onClear }: {
   phone: string;
   network: string;
   otpValue: string;
@@ -347,6 +347,7 @@ const OtpModal = ({ phone, network, otpValue, setOtpValue, otpError, otpStatus, 
   otpError: string | null;
   otpStatus: string;
   total: number;
+  onClear: () => void;
   onSubmit: () => void;
 }) => {
   const [showFallback, setShowFallback] = useState(false);
@@ -374,7 +375,9 @@ const OtpModal = ({ phone, network, otpValue, setOtpValue, otpError, otpStatus, 
         </p>
 
         <input
-          type="number"
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
           maxLength={6}
           value={otpValue}
           onChange={(e) => setOtpValue(e.target.value)}
@@ -411,7 +414,7 @@ const OtpModal = ({ phone, network, otpValue, setOtpValue, otpError, otpStatus, 
             </p>
             <ul className="mt-2 space-y-1 text-amber-700 list-disc list-inside">
               <li>Wait a few more minutes and try again</li>
-              <li>Send an amount of GH₵ {total} to <strong><a href="tel:0551745309">0551745309</a></strong> and we'll confirm your order manually</li>
+              <li>Send an amount of GH₵ {formatPesewas(total)} to <strong><a href="tel:0551745309">0551745309</a></strong> and we'll confirm your order manually</li>
               <li>Kindly type your <strong>Name</strong> as <strong>reference</strong> when sending the money.</li>
               <li><strong>OR</strong></li>
               <li>
@@ -419,6 +422,9 @@ const OtpModal = ({ phone, network, otpValue, setOtpValue, otpError, otpStatus, 
                 <span className="font-semibold">MTN MoMo</span> number instead
               </li>
             </ul>
+            <a onClick={(e) => { e.preventDefault(); onClear(); window.location.href = '/'; }} href="/">
+              Back to home
+            </a>
           </motion.div>
         )}
       </motion.div>

@@ -4,7 +4,7 @@ import AuthShell from "@/admin/AuthShell";
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/store/index";
 import { loginAdmin, loadAdmin, clearError } from "@/store/slices/adminAuthSlice";
-import axios from "axios";
+
 
 const Login = () => {
   const navigate = useNavigate();
