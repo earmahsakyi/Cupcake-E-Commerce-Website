@@ -153,7 +153,7 @@ const Transactions = () => {
             {/* Summary cards */}
             <div className="mb-6 grid gap-4 sm:grid-cols-3">
                 <SummaryCard
-                    label="Total Revenue"
+                    label="Total Income"
                     value={formatPesewas(totalRevenue)}
                     icon={<TrendingUp className="h-5 w-5" />}
                     tone="bg-emerald-100 text-emerald-700"

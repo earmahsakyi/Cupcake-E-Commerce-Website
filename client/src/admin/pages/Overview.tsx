@@ -59,7 +59,7 @@ const Overview = () => {
 
   const cards = [
     { label: "Total Orders", value: totals.orders, icon: ShoppingBag, tone: "bg-primary-soft text-primary" },
-    { label: "Total Revenue", value: formatPesewas(totals.revenue), icon: Coins, tone: "bg-accent text-chocolate" },
+    // { label: "Total Revenue", value: formatPesewas(totals.revenue), icon: Coins, tone: "bg-accent text-chocolate" },
     { label: "Orders Today", value: totals.today, icon: CalendarDays, tone: "bg-secondary text-foreground" },
     { label: "Pending", value: totals.pending, icon: Clock, tone: "bg-amber-100 text-amber-700" },
     { label: "Delivered", value: totals.delivered, icon: CheckCircle2, tone: "bg-emerald-100 text-emerald-700" },
@@ -95,6 +95,46 @@ const Overview = () => {
             <p className="mt-1 font-serif text-2xl font-semibold text-foreground">{c.value}</p>
           </div>
         ))}
+      </div>
+      
+        <div className="mt-8 rounded-2xl bg-card border border-border shadow-sm">
+        <div className="flex items-center justify-between p-5">
+          <h2 className="font-serif text-lg text-foreground">Recent orders</h2>
+          <Link to="/admin/orders" className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+            View all <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-secondary/40 text-xs uppercase tracking-wider text-muted-foreground">
+              <tr>
+                <th className="px-5 py-3 text-left">Order ID</th>
+                <th className="px-5 py-3 text-left">Customer</th>
+                <th className="px-5 py-3 text-left">Delivery</th>
+                <th className="px-5 py-3 text-left">Status</th>
+                <th className="px-5 py-3 text-right">Total</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {list.slice(0, 6).map((o) => (
+                <tr key={o.id} className="hover:bg-secondary/30">
+                  <td className="px-5 py-3 font-medium text-foreground">
+                    <Link to={`/admin/orders/${o.id}`} className="hover:text-primary">
+                      {o.id} {o.is_urgent && <span className="ml-1 rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-bold uppercase text-destructive">Urgent</span>}
+                    </Link>
+                  </td>
+                  <td className="px-5 py-3 text-foreground">{o.customer_name}</td>
+                  <td className="px-5 py-3 text-muted-foreground">{new Date(o.created_at).toLocaleDateString()}</td>
+                  <td className="px-5 py-3"><StatusBadge status={o.status} /></td>
+                  <td className="px-5 py-3 text-right font-semibold text-foreground">{formatPesewas(o.total_pesewas)}</td>
+                </tr>
+              ))}
+              {list.length === 0 && (
+                <tr><td colSpan={5} className="px-5 py-10 text-center text-muted-foreground">No orders yet.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div className="mt-8 grid gap-4 lg:grid-cols-2">
@@ -170,45 +210,7 @@ const Overview = () => {
         </div>
       </div>
 
-      <div className="mt-8 rounded-2xl bg-card border border-border shadow-sm">
-        <div className="flex items-center justify-between p-5">
-          <h2 className="font-serif text-lg text-foreground">Recent orders</h2>
-          <Link to="/admin/orders" className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
-            View all <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-secondary/40 text-xs uppercase tracking-wider text-muted-foreground">
-              <tr>
-                <th className="px-5 py-3 text-left">Order ID</th>
-                <th className="px-5 py-3 text-left">Customer</th>
-                <th className="px-5 py-3 text-left">Delivery</th>
-                <th className="px-5 py-3 text-left">Status</th>
-                <th className="px-5 py-3 text-right">Total</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {list.slice(0, 6).map((o) => (
-                <tr key={o.id} className="hover:bg-secondary/30">
-                  <td className="px-5 py-3 font-medium text-foreground">
-                    <Link to={`/admin/orders/${o.id}`} className="hover:text-primary">
-                      {o.id} {o.is_urgent && <span className="ml-1 rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-bold uppercase text-destructive">Urgent</span>}
-                    </Link>
-                  </td>
-                  <td className="px-5 py-3 text-foreground">{o.customer_name}</td>
-                  <td className="px-5 py-3 text-muted-foreground">{new Date(o.created_at).toLocaleDateString()}</td>
-                  <td className="px-5 py-3"><StatusBadge status={o.status} /></td>
-                  <td className="px-5 py-3 text-right font-semibold text-foreground">{formatPesewas(o.total_pesewas)}</td>
-                </tr>
-              ))}
-              {list.length === 0 && (
-                <tr><td colSpan={5} className="px-5 py-10 text-center text-muted-foreground">No orders yet.</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+    
     </AdminLayout>
   );
 };
