@@ -7,6 +7,7 @@ import StatusBadge from "@/admin/components/StatusBadge";
 import { OrderStatus } from "@/store/types";
 import { useAppDispatch, useAppSelector } from "@/store/index";
 import { formatPesewas } from "@/lib/utils";
+import { sendSms, clearSendError } from "@/store/slices/smsSlice";
 import {
     fetchOrderById,
     updateOrderStatus,
@@ -17,9 +18,9 @@ import {
 import { toast } from "sonner";
 
 const SMS_TEMPLATES = [
-  { label: "Order confirmation", text: (name: string, id: number) => `Hi ${name}, thanks for your order ${id}! We're preparing it with love. — Cup O' Cake` },
-  { label: "Delivery on the way", text: (name: string, id: number) => `Hi ${name}, your order ${id} is on the way! Please be available to receive it. — Cup O' Cake` },
-  { label: "Delivered confirmation", text: (name: string, id: number) => `Hi ${name}, we hope you enjoy your cake! Order ${id}. Please rate us. — Cup O' Cake` },
+  { label: "Order confirmation", text: (name: string, reference: string) => `Hi ${name}, thanks for your order with reference ${reference} ! We're preparing it with love. — Cup O' Cake` },
+  { label: "Delivery on the way", text: (name: string, reference: string) => `Hi ${name}, your order with reference ${reference}  is on the way! Please be available to receive it. — Cup O' Cake` },
+  { label: "Delivered confirmation", text: (name: string, reference: string) => `Hi ${name}, we hope you enjoy your cake! Order with reference ${reference}. Please rate us. — Cup O' Cake` },
 ];
 
 const STATUSES: OrderStatus[] = ["pending", "paid", "processing", "delivered", "cancelled"];
@@ -30,6 +31,7 @@ const OrderDetail = () => {
   const dispatch = useAppDispatch();
   const { currentOrder: order, fetchStatus, mutating, mutateError }
     = useAppSelector((state) => state.orders);
+    const { sending, sendError } = useAppSelector((state) => state.sms);
 
   const [smsOpen, setSmsOpen] = useState(false);
   const [smsText, setSmsText] = useState("");
@@ -45,6 +47,14 @@ const OrderDetail = () => {
       dispatch(clearMutateError());
     }
   }, [mutateError, dispatch]);
+
+    // Show SMS send errors
+  useEffect(() => {
+    if (sendError) {
+      toast.error(sendError);
+      dispatch(clearSendError());
+    }
+  }, [sendError, dispatch]);
 
   if (fetchStatus === 'loading') return (
     <AdminLayout>
@@ -84,12 +94,21 @@ const OrderDetail = () => {
     }
   };
 
-  const sendSms = (text: string) => {
-    if (!text.trim()) return;
-    // TODO: wire to SMS endpoint (Task 4)
-    toast.info(`SMS sending coming in Task 4`);
-    setSmsOpen(false);
-    setSmsText("");
+  const handleSendSms = async () => {
+    if (!smsText.trim()) return;
+    try {
+      await dispatch(sendSms({
+        order_id: order.id,
+        phone: order.customer_phone,
+        message: smsText.trim(),
+        trigger_type: 'manual',
+      })).unwrap();
+      toast.success('SMS sent successfully');
+      setSmsOpen(false);
+      setSmsText("");
+    } catch {
+      // handled by sendError effect
+    }
   };
 
   return (
@@ -267,7 +286,7 @@ const OrderDetail = () => {
       </div>
 
       {/* SMS Modal */}
-      {smsOpen && (
+        {smsOpen && (
         <div
           className="fixed inset-0 z-50 grid place-items-center bg-foreground/40 p-4"
           onClick={() => setSmsOpen(false)}
@@ -276,16 +295,20 @@ const OrderDetail = () => {
             className="w-full max-w-lg rounded-3xl bg-card p-6 shadow-card"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="font-serif text-xl text-foreground">Send SMS to {order.customer_name}</h3>
+            <h3 className="font-serif text-xl text-foreground">
+              Send SMS to {order.customer_name}
+            </h3>
             <p className="text-sm text-muted-foreground">{order.customer_phone}</p>
 
             <div className="mt-4 space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Templates</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Templates
+              </p>
               <div className="flex flex-wrap gap-2">
                 {SMS_TEMPLATES.map((t) => (
                   <button
                     key={t.label}
-                    onClick={() => setSmsText(t.text(order.customer_name, order.id))}
+                    onClick={() => setSmsText(t.text(order.customer_name, order.reference))}
                     className="rounded-full border border-border bg-secondary/40 px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-secondary"
                   >
                     {t.label}
@@ -311,10 +334,15 @@ const OrderDetail = () => {
                 Cancel
               </button>
               <button
-                onClick={() => sendSms(smsText)}
-                className="inline-flex items-center gap-1.5 rounded-full bg-gradient-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-soft"
+                onClick={handleSendSms}
+                disabled={sending || !smsText.trim()}
+                className="inline-flex items-center gap-1.5 rounded-full bg-gradient-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-soft disabled:opacity-70"
               >
-                <Send className="h-4 w-4" /> Send
+                {sending
+                  ? <Loader2 className="h-4 w-4 animate-spin" />
+                  : <Send className="h-4 w-4" />
+                }
+                {sending ? 'Sending…' : 'Send'}
               </button>
             </div>
           </div>

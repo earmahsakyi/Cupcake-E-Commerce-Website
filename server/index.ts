@@ -11,6 +11,8 @@ import productRouter from './routes/productRoutes.js';
 import orderRouter from './routes/orderRoutes.js';
 import webhookRouter from './routes/webhookRoutes.js';
 import authRouter from './routes/authRoutes.js';
+import smsRouter from './routes/smsRoutes.js'
+import paymentsRouter from './routes/paymentsRoutes.js'
 
 dotenv.config(); 
 
@@ -41,6 +43,8 @@ app.use('/api/products',productRouter);
 app.use('/api/orders',orderRouter);
 app.use('/api/webhook', webhookRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/sms', smsRouter);
+app.use('/api/payments', paymentsRouter);
 
 app.use(errorHandler)
 

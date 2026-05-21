@@ -126,6 +126,17 @@ const runMigrations = async (): Promise<void> => {
             FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE SET NULL
         )`;
 
+    const createSMSLogs = `
+        CREATE TABLE IF NOT EXISTS sms_logs (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            order_id INT NOT NULL,
+            phone VARCHAR(20) NOT NULL,
+            message TEXT NOT NULL,
+            trigger_type ENUM('manual', 'payment', 'out_for_delivery') NOT NULL,
+            sent_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+        )`;
+
 
         //put them in a list
     const migrations = [

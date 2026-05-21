@@ -69,6 +69,19 @@ export const webhook = asyncHandler(
    
         await sendOrderConfirmationSMS(order.customer_phone, amount, order.customer_name, reference);
 
+        // Auto-log the SMS that was just sent
+        try {
+            const smsMessage = `Hi ${order.customer_name}, your payment for order ${reference} was successful. We'll start preparing your order. — Cup O' Cake`;
+            await pool.execute(
+                `INSERT INTO sms_logs (order_id, phone, message, trigger_type, sent_at)
+                 VALUES (?, ?, ?, 'payment', NOW())`,
+                [order.id, order.customer_phone, smsMessage]
+            );
+        } catch (smsLogErr) {
+            // Don't fail the webhook if logging fails — just log the error
+            console.error('Failed to log SMS:', smsLogErr);
+        }
+
         const html = `
         <div style="font-family: Arial, sans-serif; background-color: #f9fafc; padding: 20px; border-radius: 10px; max-width: 650px; margin: auto; border: 1px solid #e5e7eb;">
 

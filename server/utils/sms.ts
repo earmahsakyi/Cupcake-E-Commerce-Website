@@ -39,3 +39,33 @@ export const sendOrderConfirmationSMS = async (
     console.error('SMS send error:', err);
   }
 };
+
+export const sendRawSMS = async (phone: string, message: string): Promise<void> => {
+    try {
+        const formatted = phone.startsWith('0')
+            ? '233' + phone.substring(1)
+            : phone.startsWith('233')
+            ? phone
+            : '233' + phone;
+
+        const response = await fetch('https://sms.arkesel.com/api/v2/sms/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': String(process.env.ARKESEL_API_KEY),
+            },
+            body: JSON.stringify({
+                sender: process.env.ARKESEL_SENDER_ID,
+                message,
+                recipients: [formatted],
+            }),
+        });
+
+        const data: any = await response.json();
+        if (data.status !== 'success') {
+            console.error('Failed to send SMS:', JSON.stringify(data));
+        }
+    } catch (err) {
+        console.error('SMS send error:', err);
+    }
+};
