@@ -326,7 +326,7 @@ const Transactions = () => {
                             </div>
                             <div>
                                 <label className="mb-1.5 block text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                                    Recorded_At
+                                    Recorded At
                                 </label>
                                 <input
                                     type='date'
