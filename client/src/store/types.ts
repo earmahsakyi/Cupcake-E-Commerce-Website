@@ -103,6 +103,7 @@ export interface CreateTransactionPayload {
   amount_pesewas: number;
   description: string;
   source: "manual";
+  recorded_at?: string;
   order_id?: number | null;
 }
  
@@ -110,5 +111,6 @@ export interface UpdateTransactionPayload {
   type?: TransactionType;
   amount_pesewas?: number;
   description?: string;
+  recorded_at?: string;
 }
  

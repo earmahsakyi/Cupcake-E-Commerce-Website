@@ -19,7 +19,8 @@ export const getAllTransactions = asyncHandler(
 // ─── POST /api/transactions 
 export const createTransaction = asyncHandler(
     async (req: Request, res: Response) => {
-        const { type, amount_pesewas, description, order_id = null } = req.body;
+        const { type, amount_pesewas, description, order_id = null,recorded_at } = req.body;
+        const created_at = recorded_at || null;
 
         if (!type || !["revenue", "expense"].includes(type)) {
             throw new AppError('type must be "revenue" or "expense"', 400);
@@ -32,9 +33,9 @@ export const createTransaction = asyncHandler(
         }
 
         const [result]: any = await pool.execute(
-            `INSERT INTO transactions (type, amount_pesewas, description, source, order_id)
-             VALUES (?, ?, ?, 'manual', ?)`,
-            [type, amount_pesewas, description.trim(), order_id]
+            `INSERT INTO transactions (type, amount_pesewas, description, source, order_id,recorded_at)
+             VALUES (?, ?, ?, 'manual', ?, ?)`,
+            [type, amount_pesewas, description.trim(), order_id,created_at]
         );
 
         res.status(201).json({ success: true, data: { id: result.insertId } });
@@ -56,7 +57,7 @@ export const updateTransaction = asyncHandler(
             throw new AppError("Only manually created transactions can be edited", 403);
         }
 
-        const { type, amount_pesewas, description } = req.body;
+        const { type, amount_pesewas, description,recorded_at } = req.body;
 
         const fields: string[] = [];
         const values: any[] = [];
@@ -79,6 +80,11 @@ export const updateTransaction = asyncHandler(
             if (!description.trim()) throw new AppError("description cannot be empty", 400);
             fields.push("description = ?");
             values.push(description.trim());
+        }
+        if (recorded_at !== undefined) {
+            if (!recorded_at) throw new AppError("Recorded_at cannot be empty", 400);
+            fields.push("recorded_at = ?");
+            values.push(recorded_at);
         }
 
         if (!fields.length) throw new AppError("No fields to update", 400);

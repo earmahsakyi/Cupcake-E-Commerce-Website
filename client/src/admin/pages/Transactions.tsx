@@ -17,9 +17,10 @@ interface FormState {
     type: TransactionType;
     amount: string;          // user types in GHS, we convert to pesewas on submit
     description: string;
+    recorded_at?: string;
 }
 
-const emptyForm = (): FormState => ({ type: "revenue", amount: "", description: "" });
+const emptyForm = (): FormState => ({ type: "revenue", amount: "", description: "", recorded_at:"" });
 
 const typeTone: Record<TransactionType, string> = {
     revenue: "bg-emerald-100 text-emerald-700",
@@ -28,6 +29,9 @@ const typeTone: Record<TransactionType, string> = {
 
 // ─── Component 
 const Transactions = () => {
+    const today = new Date();
+    today.setDate(today.getDate() + 1);
+    const minDate = today.toISOString().slice(0, 10);
     const dispatch = useAppDispatch();
     const { items, status, error, mutating, mutateError } = useAppSelector(
         (s) => s.transactions
@@ -72,6 +76,7 @@ const Transactions = () => {
             type: t.type,
             amount: (t.amount_pesewas / 100).toFixed(2),
             description: t.description,
+            recorded_at: t.recorded_at
         });
         setFormError(null);
         dispatch(clearMutateError());
@@ -103,6 +108,7 @@ const Transactions = () => {
                         type: form.type,
                         amount_pesewas: amountPesewas,
                         description: form.description.trim(),
+                        recorded_at: form.recorded_at,
                     },
                 })
             );
@@ -114,6 +120,7 @@ const Transactions = () => {
                     amount_pesewas: amountPesewas,
                     description: form.description.trim(),
                     source: "manual",
+                    recorded_at: form.recorded_at,
                 })
             );
             if (createTransaction.fulfilled.match(result)) {
@@ -316,6 +323,18 @@ const Transactions = () => {
                                     placeholder="e.g. Flour and butter supplies"
                                     value={form.description}
                                     onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+                                    className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                                />
+                            </div>
+                            <div>
+                                <label className="mb-1.5 block text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                                    Recorded_At
+                                </label>
+                                <input
+                                    type='date'
+                                    value={form.recorded_at}
+                                    min={minDate}
+                                    onChange={(e) => setForm((f) => ({ ...f, recorded_at: e.target.value }))}
                                     className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
                                 />
                             </div>
