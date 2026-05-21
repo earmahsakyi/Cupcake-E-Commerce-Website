@@ -46,15 +46,15 @@ const Orders = () => {
           <h1 className="font-serif text-2xl text-foreground sm:text-3xl">Orders</h1>
           <p className="text-sm text-muted-foreground">{filtered.length} of {list.length} orders</p>
         </div>
-        <div className="relative flex gap-3">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <input
+        <div className="relative w-64">
+        <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground pointer-events-none" /> 
+        <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search orders, customers, phone…"
-            className="input-base !w-64 pl-9"
-          />
-        </div>
+            className="w-full rounded-xl border border-border bg-background px-10 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+        />
+    </div>
       </div>
 
       <div className="mb-4 flex flex-wrap gap-2">
