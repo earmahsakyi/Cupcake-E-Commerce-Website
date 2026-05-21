@@ -74,7 +74,7 @@ const Transactions = () => {
             type: t.type,
             amount: (t.amount_pesewas / 100).toFixed(2),
             description: t.description,
-            recorded_at: new Date(t.recorded_at).toLocaleDateString(),
+            recorded_at: new Date(t.recorded_at).toISOString().split('T')[0],
         });
         setFormError(null);
         dispatch(clearMutateError());
