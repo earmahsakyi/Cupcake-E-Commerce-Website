@@ -67,6 +67,7 @@ const ProductDetail = () => {
   }, [product, size]);
 
   const displayPrice = useMemo(() => {
+    if (!product) return 0; 
     if (product?.product_type === 'cupcake' && size) {
       return unitPrice;
     }
