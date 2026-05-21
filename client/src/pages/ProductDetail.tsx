@@ -16,6 +16,12 @@ const sizeImageMap: Record<string, number> = {
   large: 2,
 };
 
+const sizeDisplayMap: Record<string, string> = {
+  small: 'Mini Bliss',
+  medium: 'Deluxe',
+  large: 'Elite',
+};
+
 const ProductDetail = () => {
   const { slug = "" } = useParams();
   const dispatch = useAppDispatch();
@@ -228,7 +234,7 @@ const ProductDetail = () => {
                               : "border-border bg-card text-foreground hover:border-primary"
                           }`}
                         >
-                          {v.size} - {formatPesewas(v.price_pesewas)}
+                          {sizeDisplayMap[v.size] ?? v.size} - {formatPesewas(v.price_pesewas)}
                         </button>
                       ))}
                     </div>
