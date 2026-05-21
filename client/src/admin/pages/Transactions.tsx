@@ -90,8 +90,8 @@ const Transactions = () => {
 
     const handleSubmit = async () => {
         const amountPesewas = Math.round(parseFloat(form.amount) * 100);
-        if (!form.description.trim()) {
-            setFormError("Description is required.");
+        if (!form.description.trim() || !form.amount) {
+            setFormError("Description is required and amount is required!");
             return;
         }
         if (isNaN(amountPesewas) || amountPesewas <= 0) {
