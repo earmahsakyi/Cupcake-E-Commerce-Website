@@ -5,7 +5,7 @@ const reviews = [
   {
     name: "Ama Boateng",
     role: "Bride, Accra",
-    quote: "Our wedding cake was a dream, gorgeous and even more delicious. Sweet Crumbs made our day unforgettable!",
+    quote: "Our wedding cake was a dream, gorgeous and even more delicious. Cup O' Cake made our day unforgettable!",
     initial: "A",
   },
   {

@@ -21,7 +21,7 @@ const CTA = () => {
               Ready to taste happiness?
             </h2>
             <p className="mx-auto mt-4 max-w-lg text-base text-chocolate-foreground/80 sm:text-lg">
-              Browse our cakes, build your order, and check out — all in one place.
+              Browse our cakes, build your order, and check out,  all in one place.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <a
