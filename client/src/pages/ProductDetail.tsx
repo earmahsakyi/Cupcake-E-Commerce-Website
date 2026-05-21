@@ -346,8 +346,10 @@ const ProductDetail = () => {
                       initial={{ opacity: 0, y: 6 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -6 }}
+                      className="flex items-center gap-2"
                     >
-                      <Check className="h-5 w-5" /> Added!
+                      <Check className="h-5 w-5" /> 
+                       <span>Added!</span>
                     </motion.span>
                   ) : (
                     <motion.span
@@ -355,8 +357,10 @@ const ProductDetail = () => {
                       initial={{ opacity: 0, y: 6 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -6 }}
+                      className="flex items-center gap-2"
                     >
-                      <ShoppingBag className="h-5 w-5" /> Add to Cart
+                      <ShoppingBag className="h-5 w-5" />
+                       <span>Add to Cart</span>
                     </motion.span>
                   )}
                 </AnimatePresence>
