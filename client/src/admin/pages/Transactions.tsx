@@ -29,9 +29,7 @@ const typeTone: Record<TransactionType, string> = {
 
 // ─── Component 
 const Transactions = () => {
-    const today = new Date();
-    today.setDate(today.getDate() + 1);
-    const minDate = today.toISOString().slice(0, 10);
+   
     const dispatch = useAppDispatch();
     const { items, status, error, mutating, mutateError } = useAppSelector(
         (s) => s.transactions
@@ -333,7 +331,6 @@ const Transactions = () => {
                                 <input
                                     type='date'
                                     value={form.recorded_at}
-                                    min={minDate}
                                     onChange={(e) => setForm((f) => ({ ...f, recorded_at: e.target.value }))}
                                     className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
                                 />
