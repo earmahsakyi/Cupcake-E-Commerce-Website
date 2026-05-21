@@ -4,6 +4,7 @@ import ordersReducer from "@/store/slices/ordersSlice";
 import adminAuthReducer from "@/store/slices/adminAuthSlice";
 import smsReducer from '@/store/slices/smsSlice';
 import paymentsReducer from '@/store/slices/paymentsSlice';
+import transactionsReducer from '@/store/slices/transactionsSlice'
 import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux';
 
 export const store = configureStore({
@@ -13,7 +14,8 @@ export const store = configureStore({
     adminAuth: adminAuthReducer,
     sms: smsReducer,
     payments: paymentsReducer,
-    
+    transactions: transactionsReducer,
+
   },
 });
 

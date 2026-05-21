@@ -18,7 +18,7 @@ import { formatPesewas } from "@/lib/utils";
 import { fetchAllOrders } from "@/store/slices/ordersSlice";
 import { Order } from "@/store/types";
 import { useEffect } from "react";
-
+import MonthlyExpensesChart from "./Monthlyexpenseschart";
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 
@@ -164,6 +164,9 @@ const Overview = () => {
               </BarChart>
             </ResponsiveContainer>
           </div>
+        </div>
+         <div className="lg:col-span-2">
+          <MonthlyExpensesChart />
         </div>
       </div>
 

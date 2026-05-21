@@ -84,3 +84,31 @@ export interface AdminUser {
   email: string;
   role: string;
 }
+
+export type TransactionType = "revenue" | "expense";
+export type TransactionSource = "order" | "manual";
+ 
+export interface Transaction {
+  id: number;
+  type: TransactionType;
+  amount_pesewas: number;
+  description: string;
+  source: TransactionSource;
+  order_id: number | null;
+  recorded_at: string;
+}
+ 
+export interface CreateTransactionPayload {
+  type: TransactionType;
+  amount_pesewas: number;
+  description: string;
+  source: "manual";
+  order_id?: number | null;
+}
+ 
+export interface UpdateTransactionPayload {
+  type?: TransactionType;
+  amount_pesewas?: number;
+  description?: string;
+}
+ 
