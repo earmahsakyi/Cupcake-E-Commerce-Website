@@ -25,6 +25,7 @@ import ResetPassword from "@/admin/pages/ResetPassword";
 import AccountLocked from "@/admin/pages/AccountLocked";
 import UnlockAccount from "@/admin/pages/UnlockAccount";
 import Overview from "@/admin/pages/Overview";
+import Transactions from "./admin/pages/Transactions.tsx";
 import Orders from "@/admin/pages/Orders";
 import OrderDetail from "@/admin/pages/OrderDetail";
 import Products from "@/admin/pages/Products";
@@ -85,6 +86,7 @@ const App = () => (
               <Route path="/admin/deliveries" element={<ProtectedRoute><Deliveries /></ProtectedRoute>} />
               <Route path="/admin/payments" element={<ProtectedRoute><Payments /></ProtectedRoute>} />
               <Route path="/admin/sms" element={<ProtectedRoute><SmsLog /></ProtectedRoute>} />
+              <Route path="/admin/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
 
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

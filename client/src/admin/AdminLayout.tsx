@@ -14,6 +14,7 @@ const nav = [
   { to: "/admin/deliveries", label: "Deliveries", icon: Truck },
   { to: "/admin/payments", label: "Payments", icon: CreditCard },
   { to: "/admin/sms", label: "SMS Log", icon: MessageSquare },
+  { to: "/admin/transactions", label: "Transactions", icon: CreditCard },
 ];
 
 const AdminLayout = ({ children }: { children: ReactNode }) => {
