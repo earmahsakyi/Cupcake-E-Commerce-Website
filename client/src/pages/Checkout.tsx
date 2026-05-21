@@ -331,6 +331,7 @@ const Checkout = () => {
           otpError={otpError}
           otpStatus={otpStatus}
           onSubmit={handleOtpSubmit}
+          total={total}
         />
       )}
       <Footer />
@@ -338,13 +339,14 @@ const Checkout = () => {
   );
 };
 
-const OtpModal = ({ phone, network, otpValue, setOtpValue, otpError, otpStatus, onSubmit }: {
+const OtpModal = ({ phone, network, otpValue, setOtpValue, otpError, otpStatus, onSubmit, total }: {
   phone: string;
   network: string;
   otpValue: string;
   setOtpValue: (v: string) => void;
   otpError: string | null;
   otpStatus: string;
+  total: number;
   onSubmit: () => void;
 }) => {
   const [showFallback, setShowFallback] = useState(false);
@@ -409,7 +411,9 @@ const OtpModal = ({ phone, network, otpValue, setOtpValue, otpError, otpStatus, 
             </p>
             <ul className="mt-2 space-y-1 text-amber-700 list-disc list-inside">
               <li>Wait a few more minutes and try again</li>
-              <li>Call us on <strong><a href="tel:0551745309">0551745309</a></strong> and we'll confirm your order manually</li>
+              <li>Send an amount of GH₵ {total} to <strong><a href="tel:0551745309">0551745309</a></strong> and we'll confirm your order manually</li>
+              <li>Kindly type your <strong>Name</strong> as <strong>reference</strong> when sending the money.</li>
+              <li><strong>OR</strong></li>
               <li>
                 Place a new order using an{" "}
                 <span className="font-semibold">MTN MoMo</span> number instead

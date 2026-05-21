@@ -117,7 +117,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         const item = { ...itemInput } as CartItem;
 
         // Improved key generation
-        let keyParts: string[] = [item.cakeId];
+        const keyParts: string[] = [item.cakeId];
 
         if (item.size) keyParts.push(`size:${item.size}`);
         if (item.selected_flavors && item.selected_flavors.length > 0) {
