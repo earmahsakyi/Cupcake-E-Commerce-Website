@@ -10,6 +10,12 @@ import { formatPesewas, getStartingPrice } from "@/lib/utils";
 import { useCart } from "@/context/CartContext";
 import { toast } from "@/hooks/use-toast";
 
+const sizeImageMap: Record<string, number> = {
+  small: 0,
+  medium: 1,
+  large: 2,
+};
+
 const ProductDetail = () => {
   const { slug = "" } = useParams();
   const dispatch = useAppDispatch();
@@ -210,7 +216,12 @@ const ProductDetail = () => {
                       {product.variants.map((v) => (
                         <button
                           key={v.size}
-                          onClick={() => setSize(v.size)}
+                          onClick={() => {setSize(v.size);
+                            const idx = sizeImageMap[v.size];
+                            if (idx !== undefined && product.images[idx]) {
+                              setActiveImg(idx);
+                            }
+                          }}
                           className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
                             size === v.size
                               ? "border-primary bg-primary text-primary-foreground"
