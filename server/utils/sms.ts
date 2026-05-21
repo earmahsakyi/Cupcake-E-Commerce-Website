@@ -5,11 +5,14 @@ export const sendOrderConfirmationSMS = async (
   reference: string
 ): Promise<void> => {
   try {
-    const formatted = phone.startsWith('0')
-      ? '233' + phone.substring(1)
-      : phone.startsWith('233')
-      ? phone
-      : '233' + phone;
+    const cleaned = phone.replace(/[\s\-\+]/g, '');
+    const formatted = cleaned.startsWith('0')
+      ? '233' + cleaned.substring(1)
+      : cleaned.startsWith('233')
+      ? cleaned
+      : '233' + cleaned;
+
+      console.log('Sending SMS to:', formatted); 
 
     const message = `Hi ${customerName}, your CupOcake order ${reference} has been confirmed! Total: GHS ${(totalPesewas / 100).toFixed(2)}. We'll notify you when it's on the way.`;
 
@@ -42,11 +45,16 @@ export const sendOrderConfirmationSMS = async (
 
 export const sendRawSMS = async (phone: string, message: string): Promise<void> => {
     try {
-        const formatted = phone.startsWith('0')
-            ? '233' + phone.substring(1)
-            : phone.startsWith('233')
-            ? phone
-            : '233' + phone;
+        // ✅ Strip spaces, dashes, plus signs first
+        const cleaned = phone.replace(/[\s\-\+]/g, '');
+
+        const formatted = cleaned.startsWith('0')
+            ? '233' + cleaned.substring(1)
+            : cleaned.startsWith('233')
+            ? cleaned
+            : '233' + cleaned;
+
+        console.log('Sending SMS to:', formatted); 
 
         const response = await fetch('https://sms.arkesel.com/api/v2/sms/send', {
             method: 'POST',
