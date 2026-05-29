@@ -3,22 +3,22 @@ import { Star } from "lucide-react";
 
 const reviews = [
   {
-    name: "Ama Boateng",
-    role: "Bride, Accra",
-    quote: "Our wedding cake was a dream, gorgeous and even more delicious. Cup O' Cake made our day unforgettable!",
+    name: "Alexandra  Yeboah",
+    role: "Birthday celebrant, Accra",
+    quote: "Our birthday cake was a dream, gorgeous and even more delicious. Cup O' Cake made our day unforgettable!",
     initial: "A",
   },
   {
-    name: "Kwame Mensah",
+    name: "Hayzel Addison",
     role: "Birthday celebrant",
     quote: "Ordered cupcakes for my daughter's birthday and everyone was blown away. So fresh and beautifully packaged.",
-    initial: "K",
+    initial: "H",
   },
   {
-    name: "Esi Owusu",
+    name: "Gregory Daniels",
     role: "Event planner, Kumasi",
     quote: "My go-to bakery for client events. Reliable, creative, and the taste? Out of this world.",
-    initial: "E",
+    initial: "G",
   },
 ];
 

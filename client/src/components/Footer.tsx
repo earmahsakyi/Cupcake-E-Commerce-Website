@@ -1,6 +1,6 @@
-import { Cake, Instagram, Facebook, Phone, Mail, MapPin, Twitter } from "lucide-react";
+import { Cake, Instagram, Phone, Mail, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
-import { FaSnapchat } from "react-icons/fa";
+import { FaSnapchat,FaWhatsapp,FaTiktok } from "react-icons/fa";
 
 const Footer = () => {
   return (
@@ -43,13 +43,13 @@ const Footer = () => {
               <a href="#" aria-label="Instagram" className="flex h-10 w-10 items-center justify-center rounded-full bg-card text-foreground transition-colors hover:bg-primary hover:text-primary-foreground">
                 <Instagram className="h-4 w-4" />
               </a>
-              <a href="#" aria-label="Facebook" className="flex h-10 w-10 items-center justify-center rounded-full bg-card text-foreground transition-colors hover:bg-primary hover:text-primary-foreground">
-                <Facebook className="h-4 w-4" />
+              <a href="#" aria-label="TikTok" className="flex h-10 w-10 items-center justify-center rounded-full bg-card text-foreground transition-colors hover:bg-primary hover:text-primary-foreground">
+                <FaTiktok className="h-4 w-4" />
               </a>
-              <a href="#" aria-label="Twitter" className="flex h-10 w-10 items-center justify-center rounded-full bg-card text-foreground transition-colors hover:bg-primary hover:text-primary-foreground">
-                <Twitter className="h-4 w-4" />
+              <a href="https://wa.me/233551745309" aria-label="WhatsApp" className="flex h-10 w-10 items-center justify-center rounded-full bg-card text-foreground transition-colors hover:bg-primary hover:text-primary-foreground">
+                <FaWhatsapp className="h-4 w-4" />
               </a>
-              <a href="#" aria-label="Twitter" className="flex h-10 w-10 items-center justify-center rounded-full bg-card text-foreground transition-colors hover:bg-primary hover:text-primary-foreground">
+              <a href="https://www.snapchat.com/add/cupocake6" aria-label="Snapchat" className="flex h-10 w-10 items-center justify-center rounded-full bg-card text-foreground transition-colors hover:bg-primary hover:text-primary-foreground">
                 <FaSnapchat className="h-4 w-4" />
               </a>
             </div>
@@ -63,7 +63,7 @@ const Footer = () => {
         </div>
 
         <div className="mt-12 flex flex-col items-center justify-between gap-2 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row">
-          <span>© {new Date().getFullYear()} Cup O' Cake Ghana. Made with ❤️ in Accra & Kumasi.</span>
+          <span>© {new Date().getFullYear()} Cup O' Cake Ghana. Made with ❤️ in Kumasi.</span>
           <Link to="/admin/login" className="hover:text-primary">Staff login</Link>
         </div>
       </div>
