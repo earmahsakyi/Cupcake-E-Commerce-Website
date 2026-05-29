@@ -23,7 +23,7 @@ const Footer = () => {
             <h4 className="font-serif text-base font-semibold text-foreground">Contact</h4>
             <ul className="mt-4 space-y-3 text-sm text-muted-foreground">
               <li className="flex items-start gap-2"><Phone className="mt-0.5 h-4 w-4 text-primary" /> +233 55 174 5309 | +233 50 213 5186</li>
-              <li className="flex items-start gap-2"><Mail className="mt-0.5 h-4 w-4 text-primary" /> CupoCake@gmail.com</li>
+              <li className="flex items-start gap-2"><Mail className="mt-0.5 h-4 w-4 text-primary" /> cupocake6@gmail.com</li>
               <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 text-primary" /> Evandy Hostel(Annex) Ayeduase, KNUST</li>
             </ul>
           </div>
@@ -40,10 +40,10 @@ const Footer = () => {
           <div>
             <h4 className="font-serif text-base font-semibold text-foreground">Follow us</h4>
             <div className="mt-4 flex gap-3">
-              <a href="#" aria-label="Instagram" className="flex h-10 w-10 items-center justify-center rounded-full bg-card text-foreground transition-colors hover:bg-primary hover:text-primary-foreground">
+              <a href="https://www.instagram.com/cupocake6/" aria-label="Instagram" className="flex h-10 w-10 items-center justify-center rounded-full bg-card text-foreground transition-colors hover:bg-primary hover:text-primary-foreground">
                 <Instagram className="h-4 w-4" />
               </a>
-              <a href="#" aria-label="TikTok" className="flex h-10 w-10 items-center justify-center rounded-full bg-card text-foreground transition-colors hover:bg-primary hover:text-primary-foreground">
+              <a href="https://www.tiktok.com/@cupocake2" aria-label="TikTok" className="flex h-10 w-10 items-center justify-center rounded-full bg-card text-foreground transition-colors hover:bg-primary hover:text-primary-foreground">
                 <FaTiktok className="h-4 w-4" />
               </a>
               <a href="https://wa.me/233551745309" aria-label="WhatsApp" className="flex h-10 w-10 items-center justify-center rounded-full bg-card text-foreground transition-colors hover:bg-primary hover:text-primary-foreground">
