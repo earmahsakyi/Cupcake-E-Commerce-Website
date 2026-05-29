@@ -40,6 +40,10 @@ const Checkout = () => {
     dispatch(resetOrderState());
   }, [dispatch]);
 
+  useEffect(() => {
+    window.scrollTo({top: 0, behavior: 'smooth'})
+  },[]);
+
   const total = subtotal;
 
   if (items.length === 0) {
