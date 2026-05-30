@@ -5,7 +5,7 @@ const reviews = [
   {
     name: "Alexandra  Yeboah",
     role: "Birthday celebrant, Accra",
-    quote: "Our birthday cake was a dream, gorgeous and even more delicious. Cup O' Cake made our day unforgettable!",
+    quote: "My birthday cake was a dream, gorgeous and even more delicious. Cup O' Cake made our day unforgettable!",
     initial: "A",
   },
   {
