@@ -29,11 +29,9 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="font-serif text-base font-semibold text-foreground">Hours</h4>
+            <h4 className="font-serif text-base font-semibold text-foreground">Working Days</h4>
             <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-              <li>Mon – Fri: 8am – 8pm</li>
-              <li>Saturday: 9am – 9pm</li>
-              <li>Sunday: 10am – 6pm</li>
+              <li>Tuesday – Sunday</li>
             </ul>
           </div>
 

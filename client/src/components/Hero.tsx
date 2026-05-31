@@ -17,7 +17,7 @@ const Hero = () => {
         >
           <div className='flex flex-col items-center md:items-start md:flex-row space-y-2 md:space-y-0 md:space-x-2'>
             <span className="inline-flex items-center gap-2 rounded-full bg-card/80 px-4 py-1.5 text-xs font-medium text-primary shadow-sm backdrop-blur">
-            <Sparkles className="h-3.5 w-3.5" /> Freshly baked in Kumasi, Ghana
+            <Sparkles className="h-3.5 w-3.5" /> Pre-Order Only!
           </span>
           <p className="inline-flex items-center gap-2 rounded-full bg-card/80 px-4 py-1.5 text-xs font-medium text-primary shadow-sm backdrop-blur">
             <Megaphone className="h-3.5 w-3.5" /> Kindly take note, delivery goes out after 5pm!
