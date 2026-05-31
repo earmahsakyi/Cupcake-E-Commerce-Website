@@ -167,7 +167,7 @@ const Checkout = () => {
         <h1 className="mt-4 font-serif text-3xl text-foreground sm:text-4xl">Checkout</h1>
 
          <p className="mt-4 rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">
-            !!! Please  take note, we dont take orders Sundays.
+            !!! Please  take note, we dont take orders on Sundays.
           </p>
 
         {error && (
