@@ -12,12 +12,14 @@ import { toast } from "@/hooks/use-toast";
 
 const sizeImageMap: Record<string, number> = {
   small: 0,
+  signature: 0,
   medium: 1,
   large: 2,
 };
 
 const sizeDisplayMap: Record<string, string> = {
   small: 'Mini Bliss',
+  signature: 'Signature Cube',
   medium: 'Deluxe',
   large: 'Elite',
 };
@@ -31,7 +33,7 @@ const ProductDetail = () => {
   const { addItem, openCart } = useCart();
 
   const [activeImg, setActiveImg] = useState(0);
-  const [size, setSize] = useState<'small' | 'medium' | 'large' | undefined>();
+  const [size, setSize] = useState<'small' | 'medium' | 'large' | 'signature' | undefined>();
   const [selectedFlavors, setSelectedFlavors] = useState<string[]>([]);
   const [slotFlavors, setSlotFlavors] = useState<{ slot_number: number; flavor: string }[]>([]);
   const [flavorNote, setFlavorNote] = useState("");

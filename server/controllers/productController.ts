@@ -25,7 +25,8 @@ export const getAllProducts = asyncHandler(
 
         const [variants]: any = await pool.query(
             `SELECT id, product_id, size, price_pesewas
-            FROM cupcake_variants`
+            FROM cupcake_variants
+            ORDER BY display_order ASC`
         );
 
         const [flavors]: any = await pool.query(
@@ -107,7 +108,8 @@ export const getProductById = asyncHandler(
         const [variants]: any = await pool.query(
             `SELECT size, price_pesewas
             FROM cupcake_variants
-            WHERE product_id = ?`,
+            WHERE product_id = ?
+            ORDER BY display_order ASC`,
             [id]
         );
 

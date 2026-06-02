@@ -18,7 +18,7 @@ export interface ProductRow {
 export interface CupcakeVariantRow {
     id: number;
     product_id: number;
-    size: 'small' | 'medium' | 'large';
+    size: 'small' | 'medium' | 'large' | 'signature';
     price_pesewas: number;
 }
 
@@ -44,7 +44,7 @@ export interface BoxConfigRow {
 
 //Api to the frontend
 export interface ProductVariant {
-    size: 'small' | 'medium' | 'large';
+    size: 'small' | 'medium' | 'large' | 'signature';
     price_pesewas: number;
 }
 

@@ -16,7 +16,7 @@ import { toast } from "sonner";
 // ─── Form shape 
 
 type ProductType = 'cupcake' | 'box' | 'custom_cake' | 'other';
-const SIZES = ['small', 'medium', 'large'] as const;
+const SIZES = ['small', 'medium', 'large', 'signature'] as const;
 
 interface FormState {
     id?: number;
@@ -28,7 +28,7 @@ interface FormState {
     imagesText: string;       // one URL per line
     flavorsText: string;      // one flavor per line
     // cupcake variants — one row per size
-    variants: { size: 'small' | 'medium' | 'large'; price_pesewas: string }[];
+    variants: { size: 'small' | 'medium' | 'large' | 'signature', price_pesewas: string }[];
     // box
     box_slot_count: string;
     box_price_pesewas: string;
