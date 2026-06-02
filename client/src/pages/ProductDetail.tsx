@@ -12,9 +12,9 @@ import { toast } from "@/hooks/use-toast";
 
 const sizeImageMap: Record<string, number> = {
   small: 0,
-  signature: 0,
-  medium: 1,
-  large: 2,
+  signature: 1,
+  medium: 2,
+  large: 3,
 };
 
 const sizeDisplayMap: Record<string, string> = {
