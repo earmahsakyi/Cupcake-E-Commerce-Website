@@ -30,9 +30,9 @@ const CookieBanner = () => {
                 <p className='text-gray-600 text-sm leading-relaxed mb-6'>
                     We use cookies to enhance your experience and analyse site traffic.
                     Essential cookies are always active.{' '}
-                    <Link to='/privacy' className='text-primary underline underline-offset-2 hover:text-[#094a2e] transition-colors duration-200'>
+                    {/* <Link to='/privacy' className='text-primary underline underline-offset-2 hover:text-[#094a2e] transition-colors duration-200'>
                         Learn More
-                    </Link>
+                    </Link> */}
                 </p>
                 <div className='flex flex-col sm:flex-row gap-3 items-center justify-center'>
                     <Button variant='default' onClick={acceptAll}>
