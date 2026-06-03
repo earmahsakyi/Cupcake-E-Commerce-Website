@@ -67,7 +67,7 @@ export interface Order {
 export interface CartItem {
     product_id: number;
     quantity: number;
-    size?: 'small' | 'medium' | 'large';
+    size?: 'small' | 'medium' | 'large'| 'signature';
     selected_flavors?: string[];
     flavor_note?: string;
     slot_flavors?: { slot_number: number; flavor: string }[];

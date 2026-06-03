@@ -98,7 +98,7 @@ const Checkout = () => {
           // CUPCAKE
           return {
             ...base,
-            size: item.size as 'small' | 'medium' | 'large' | undefined,
+            size: item.size as 'small' | 'medium' | 'large' | 'signature', undefined,
             selected_flavors: item.selected_flavors || undefined,
             flavor_note: item.flavor_note || undefined,
           };
