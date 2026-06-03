@@ -15,8 +15,9 @@ import NotFound from "./pages/NotFound.tsx";
 import { useEffect } from "react";
 import { useAppDispatch } from "@/store/index";
 import { loadAdmin } from "@/store/slices/adminAuthSlice";
+import CookieBanner from '@/components/common/CookieBanner.tsx';
+import { AnimatePresence } from "framer-motion";
 
-import { AuthProvider } from "@/admin/AuthContext";
 import ProtectedRoute from "@/admin/ProtectedRoute";
 import Login from "@/admin/pages/Login";
 import Signup from "@/admin/pages/Signup";
@@ -63,6 +64,7 @@ const App = () => (
       <AppInit/>
        
           <CartProvider>
+            <AnimatePresence mode='wait'>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/cake/:slug" element={<ProductDetail />} />
@@ -91,7 +93,9 @@ const App = () => (
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
+            </AnimatePresence>
             <StorefrontExtras />
+            <CookieBanner />
           </CartProvider>
       </BrowserRouter>
     </TooltipProvider>
