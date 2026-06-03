@@ -22,3 +22,17 @@ export const generateResetToken = async () => {
     return { resetToken, hashedToken}
 } ;
 
+export const normalisePhone = (phone: string): string => {
+    const digits = phone.replace(/\D/g, ''); // strip +, spaces, dashes
+
+    if (digits.startsWith('233')) {
+        const local = digits.slice(3); // everything after 233
+        // handles 2330XXXXXXXXX (user accidentally included the 0)
+        if (local.startsWith('0')) {
+            return local;
+        }
+        return '0' + local; 
+    }
+
+    return digits;
+};

@@ -2,8 +2,9 @@ import { Request, Response } from "express";
 import pool from "../config/db.js";
 import { asyncHandler } from "../middleware/asyncHandler.js";
 import { AppError } from "../middleware/errorHandler.js";
-import { CreateOrderBody, CartItem,OrderItemRow, Order,SubmitOtpBody } from "../types/order.types.js";
+import { CreateOrderBody, Order, SubmitOtpBody } from "../types/order.types.js";
 import { generateOrderReference } from "../utils/helper.js";
+import { normalisePhone } from "../utils/helper.js";
 
 // Add this mapping at the top of the file
 const mapToPaystackProvider = (network: string): string => {
@@ -132,15 +133,20 @@ export const createOrder = asyncHandler(
                     };
                 };
             };
+             const normalisedPhone = normalisePhone(customer_phone);
+
+             if (!/^0\d{9}$/.test(normalisedPhone)) {
+                throw new AppError('Invalid phone number', 400);
+            }
             
             const paystackProvider = mapToPaystackProvider(momo_network);
             const url = 'https://api.paystack.co/charge';
             const content = {
                 'amount': totalPesewas,
-                'email' : `${customer_phone}@placeholder.com`,
+                'email' : `${normalisedPhone}@placeholder.com`,
                 'currency': 'GHS',
                 'mobile_money': {
-                    'phone': customer_phone,
+                    'phone': normalisedPhone,
                     'provider': paystackProvider
                 },
                 'channels': ['mobile_money_ussd'],
