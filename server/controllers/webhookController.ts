@@ -31,7 +31,7 @@ export const webhook = asyncHandler(
         const { reference, amount } = event.data;
 
         const [results]: any = await pool.query(
-            `SELECT customer_name, customer_phone 
+            `SELECT id, customer_name, customer_phone 
             FROM orders
             WHERE reference = ?`,
             [reference]
@@ -42,6 +42,16 @@ export const webhook = asyncHandler(
          res.status(200).json({ received: true })
          return
         };
+
+        const [payments]: any = await pool.query(
+            `SELECT status FROM payments WHERE paystack_reference = ?`,
+            [reference]
+        );
+
+        if (!payments.length || payments[0].status === 'success') {
+            res.status(200).json({ received: true });
+            return;
+        }
 
         const order = results[0];
 
@@ -71,7 +81,7 @@ export const webhook = asyncHandler(
 
         // Auto-log the SMS that was just sent
         try {
-            const smsMessage = `Hi ${order.customer_name}, your payment for order ${reference} was successful. We'll start preparing your order. — Cup O' Cake`;
+            const smsMessage = `Hi ${order.customer_name}, your payment for order ${reference} was successful. We'll start preparing your order. Cup O' Cake`;
             await pool.execute(
                 `INSERT INTO sms_logs (order_id, phone, message, trigger_type, sent_at)
                  VALUES (?, ?, ?, 'payment', NOW())`,
