@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Sparkles,Megaphone } from "lucide-react";
-import heroCake from "@/assets/hero-cake.jpg";
+import heroCake from "@/assets/hero-cake1.png";
 
 const Hero = () => {
   return (
@@ -82,8 +82,8 @@ const Hero = () => {
             className="absolute -bottom-5 -left-3 rounded-2xl bg-card px-4 py-3 shadow-card sm:-left-6"
           >
             <p className="text-xs text-muted-foreground">Today's special</p>
-            <p className="font-serif text-base font-semibold text-foreground">Rose Bloom Cake</p>
-            <p className="text-xs font-medium text-primary">From GH₵ 250</p>
+            <p className="font-serif text-base font-semibold text-foreground">Bento Cake</p>
+            <p className="text-xs font-medium text-primary">GH₵ 100</p>
           </motion.div>
         </motion.div>
       </div>
