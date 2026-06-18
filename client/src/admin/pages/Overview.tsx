@@ -54,6 +54,7 @@ const Overview = () => {
     delivered: list.filter((o) => o.status === "delivered").length,
   };
 
+  const filteredList = list.filter((o) => o.status === 'paid' || o.status === 'delivered' );
   const monthly = buildMonthlySeries(list);
   const hasData = monthly.some((m) => m.orders > 0 || m.revenue > 0);
 
@@ -116,7 +117,7 @@ const Overview = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {list.slice(0, 6).map((o) => (
+              {filteredList.slice(0, 6).map((o) => (
                 <tr key={o.id} className="hover:bg-secondary/30">
                   <td className="px-5 py-3 font-medium text-foreground">
                     <Link to={`/admin/orders/${o.id}`} className="hover:text-primary">
