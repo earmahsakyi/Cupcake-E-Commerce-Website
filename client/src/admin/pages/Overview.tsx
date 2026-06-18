@@ -45,9 +45,10 @@ const Overview = () => {
   const dispatch = useAppDispatch();
   const {list, listStatus} = useAppSelector((state) => state.orders);
   const today = new Date().toISOString().slice(0, 10);
+  const totalFiltered = list.filter((o) => o.status === 'paid' || o.status ==='delivered');
 
   const totals = {
-    orders: list.length,
+    orders: totalFiltered.length,
     revenue: list.filter((o) => o.status === "paid").reduce((s, o) => s + o.total_pesewas, 0),
     today: list.filter((o) => new Date(o.created_at).toISOString().slice(0, 10) === today).length,
     pending: list.filter((o) => o.status === "pending").length,
