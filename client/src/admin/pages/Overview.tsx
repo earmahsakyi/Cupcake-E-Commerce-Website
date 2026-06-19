@@ -50,7 +50,7 @@ const Overview = () => {
   const totals = {
     orders: totalFiltered.length,
     revenue: list.filter((o) => o.status === "paid").reduce((s, o) => s + o.total_pesewas, 0),
-    today: list.filter((o) => new Date(o.created_at).toISOString().slice(0, 10) === today).length,
+    today: list.filter((o) => new Date(o.created_at).toISOString().slice(0, 10) === today && o.status === 'paid').length,
     pending: list.filter((o) => o.status === "pending").length,
     delivered: list.filter((o) => o.status === "delivered").length,
   };
