@@ -108,8 +108,6 @@ export const loginUser = asyncHandler(
         if(existingAdmin.lockUntil && existingAdmin.lockUntil <= new Date()){
             existingAdmin.lockUntil = null;
             existingAdmin.loginAttempts = 0;
-            existingAdmin.lockLevel = 0;
-
             await existingAdmin.save();
 
         };
@@ -257,6 +255,7 @@ export const resetPassword = asyncHandler(
     async (req: Request, res: Response) => {
         const { email, token, newPassword } = req.body;
         const cleanedEmail = email.trim().toLowerCase();
+        const passwordRegex:any = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,20}$/
 
         const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
@@ -269,6 +268,10 @@ export const resetPassword = asyncHandler(
         if(!existingAdmin){
             throw new AppError('Invalid or expired verification code',400);
         };
+
+        if (!passwordRegex.test(newPassword)) {
+            throw new AppError('Password must contain uppercase, lowercase, number and special character',400)
+        }
 
         const salt = await bcrypt.genSalt(10);
         existingAdmin.password = await bcrypt.hash(newPassword,salt);
