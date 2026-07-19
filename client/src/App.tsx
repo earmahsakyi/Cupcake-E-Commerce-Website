@@ -7,7 +7,8 @@ import { CartProvider } from "@/context/CartContext";
 import CartDrawer from "@/components/CartDrawer";
 import FloatingCart from "@/components/FloatingCart";
 import Index from "./pages/Index.tsx";
-import ProductDetail from "./pages/ProductDetail.tsx";
+import ProductSrcDetail from "./pages/SrcProductDetails.tsx";
+// import ProductDetail from "./pages/ProductDetail.tsx";
 import Cart from "./pages/Cart.tsx";
 import Checkout from "./pages/Checkout.tsx";
 import OrderSuccess from "./pages/OrderSuccess.tsx";
@@ -17,6 +18,7 @@ import { useAppDispatch } from "@/store/index";
 import { loadAdmin } from "@/store/slices/adminAuthSlice";
 import CookieBanner from '@/components/common/CookieBanner.tsx';
 import { AnimatePresence } from "framer-motion";
+
 
 import ProtectedRoute from "@/admin/ProtectedRoute";
 import Login from "@/admin/pages/Login";
@@ -67,7 +69,7 @@ const App = () => (
             <AnimatePresence mode='wait'>
             <Routes>
               <Route path="/" element={<Index />} />
-              <Route path="/cake/:slug" element={<ProductDetail />} />
+              <Route path="/cake/:slug" element={<ProductSrcDetail />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/order-success" element={<OrderSuccess />} />
