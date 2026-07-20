@@ -21,7 +21,7 @@ const FeaturedSrcCakes = () => {
           transition={{ duration: 0.6 }}
           className="mx-auto max-w-2xl text-center"
         >
-          <span className="text-sm font-medium uppercase tracking-widest text-primary">
+          <span className="text-3xl font-medium uppercase tracking-widest text-primary">
             KNUST SRC WEEK
           </span>
           <h2 className="mt-3 font-serif text-3xl text-foreground sm:text-4xl lg:text-5xl">

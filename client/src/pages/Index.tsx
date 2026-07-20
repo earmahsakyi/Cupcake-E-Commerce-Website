@@ -1,5 +1,5 @@
 import Navbar from "@/components/Navbar";
-import Hero from "@/components/Hero";
+// import Hero from "@/components/Hero";
 // import FeaturedCakes from "@/components/FeaturedCakes";
 import FeaturedSrcCakes from "@/components/SrcCakes";
 import WhyChooseUs from "@/components/WhyChooseUs";
@@ -11,7 +11,7 @@ const Index = () => {
   return (
     <main className="min-h-screen bg-background">
       <Navbar />
-      <Hero />
+      {/* <Hero /> */}
       <FeaturedSrcCakes />
       <WhyChooseUs />
       <Testimonials />
