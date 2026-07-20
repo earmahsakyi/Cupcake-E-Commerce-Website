@@ -22,9 +22,9 @@ const FeaturedSrcCakes = () => {
           className="mx-auto max-w-2xl text-center"
         >
           <span className="text-3xl font-medium uppercase tracking-widest text-primary">
-            KNUST SRC WEEK
+            KNUST SRC WEEK EDITION
           </span>
-          <h2 className="mt-3 font-serif text-3xl text-foreground sm:text-4xl lg:text-5xl">
+          <h2 className="mt-3 font-serif text-xl text-foreground sm:text-4xl lg:text-5xl">
             Special Menu
           </h2>
           <p className="mt-4 text-muted-foreground">
