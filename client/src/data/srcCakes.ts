@@ -1,8 +1,14 @@
-import cake1 from "@/assets/cake-1.jpg"; // Replace with your actual new images
-import cake2 from "@/assets/cake-2.jpg";
-import cake3 from "@/assets/cake-3.jpg";
-import cake4 from "@/assets/cake-4.jpg";
-import cake5 from "@/assets/cake-5.jpg";
+import mini1 from "@/assets/mini1.png";
+import mini2 from "@/assets/mini2.png";
+import sig1 from "@/assets/Signature-cube1.png";
+import sig2 from "@/assets/sig2.png";
+import box6 from "@/assets/6-pack-box1.png";
+import box7 from "@/assets/6-pack-box3.png";
+import box1 from "@/assets/4-pack-box1.png";
+import box2 from "@/assets/4-pack-box2.png";
+import elite1 from "@/assets/elite2.png";
+import elite2 from "@/assets/elite1.png";
+
 // Add more imports if needed
 
 export type SrcCake = {
@@ -25,7 +31,7 @@ export const knustSrcCakes: SrcCake[] = [
     tag: "Popular",
     shortDesc: "Delightful mini cake perfect for personal indulgence.",
     description: "Our beautiful Mini Bliss cake — soft, moist, and elegantly decorated. The perfect size for one or two people to enjoy.",
-    images: [cake1, cake2, cake3], // Replace with your actual images
+    images: [mini1, mini2], // Replace with your actual images
   },
   {
     id: "src-2",
@@ -34,7 +40,7 @@ export const knustSrcCakes: SrcCake[] = [
     price: 2500,
     shortDesc: "Premium cube-shaped cake with signature decoration.",
     description: "Our Signature Cube cake features rich flavor and beautiful presentation. A standout choice for SRC Week celebrations.",
-    images: [cake2, cake3, cake4],
+    images: [sig1, sig2],
   },
   {
     id: "src-3",
@@ -44,7 +50,7 @@ export const knustSrcCakes: SrcCake[] = [
     tag: "Premium",
     shortDesc: "Luxurious elite cake for special moments.",
     description: "The Elite cake — a premium creation with exquisite design and superior taste. Perfect for making a statement at SRC Week.",
-    images: [cake3, cake4, cake5],
+    images: [elite1, elite2],
   },
   {
     id: "src-4",
@@ -53,7 +59,7 @@ export const knustSrcCakes: SrcCake[] = [
     price: 6500,
     shortDesc: "Romantic box perfect for sharing with your sweetheart.",
     description: "The Sweetheart Box — a stunning assortment beautifully packed. Ideal for couples and special SRC Week moments.",
-    images: [cake4, cake5, cake1],
+    images: [box1,box2],
   },
   {
     id: "src-5",
@@ -63,7 +69,7 @@ export const knustSrcCakes: SrcCake[] = [
     tag: "Grand",
     shortDesc: "The ultimate celebration cake for love and joy.",
     description: "Our grand Ultimate Love Affair cake. A masterpiece of flavor and design created for memorable celebrations during SRC Week.",
-    images: [cake5, cake1, cake2],
+    images: [box7, box6],
   },
 ];
 
