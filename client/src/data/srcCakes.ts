@@ -30,7 +30,7 @@ export const knustSrcCakes: SrcCake[] = [
     price: 1500,
     tag: "Popular",
     shortDesc: "Delightful mini cake perfect for personal indulgence.",
-    description: "Our beautiful Mini Bliss cake — soft, moist, and elegantly decorated. The perfect size for one or two people to enjoy.",
+    description: "Our beautiful Mini Bliss cake, soft, moist, and elegantly decorated. The perfect size for one or two people to enjoy.",
     images: [mini1, mini2], // Replace with your actual images
   },
   {
@@ -49,7 +49,7 @@ export const knustSrcCakes: SrcCake[] = [
     price: 4500,
     tag: "Premium",
     shortDesc: "Luxurious elite cake for special moments.",
-    description: "The Elite cake — a premium creation with exquisite design and superior taste. Perfect for making a statement at SRC Week.",
+    description: "The Elite cake, a premium creation with exquisite design and superior taste. Perfect for making a statement at SRC Week.",
     images: [elite2, elite1],
   },
   {
@@ -58,7 +58,7 @@ export const knustSrcCakes: SrcCake[] = [
     name: "Sweetheart Box",
     price: 6500,
     shortDesc: "Romantic box perfect for sharing with your sweetheart.",
-    description: "The Sweetheart Box — a stunning assortment beautifully packed. Ideal for couples and special SRC Week moments.",
+    description: "The Sweetheart Box, a stunning assortment beautifully packed. Ideal for couples and special SRC Week moments.",
     images: [box1,box2],
   },
   {
