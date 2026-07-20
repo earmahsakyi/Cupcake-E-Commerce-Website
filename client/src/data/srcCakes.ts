@@ -50,7 +50,7 @@ export const knustSrcCakes: SrcCake[] = [
     tag: "Premium",
     shortDesc: "Luxurious elite cake for special moments.",
     description: "The Elite cake — a premium creation with exquisite design and superior taste. Perfect for making a statement at SRC Week.",
-    images: [elite1, elite2],
+    images: [elite2, elite1],
   },
   {
     id: "src-4",
