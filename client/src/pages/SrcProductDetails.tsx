@@ -4,21 +4,20 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { knustSrcCakes, type SrcCake, getSrcCakeBySlug } from "@/data/srcCakes";
+import { type SrcCake, getSrcCakeBySlug } from "@/data/srcCakes";
 import { formatPesewas } from "@/lib/utils";
 
-const ProductSrcDetail = () => {
+const ProductDetail = () => {
   const { slug = "" } = useParams();
   const [product, setProduct] = useState<SrcCake | null>(null);
+  const [activeImg, setActiveImg] = useState(0);
 
   useEffect(() => {
     const srcCake = getSrcCakeBySlug(slug);
     if (srcCake) {
       setProduct(srcCake);
+      setActiveImg(0); // Reset to first image
       document.title = `${srcCake.name} | Cup O' Cake - SRC Week`;
-    } else {
-      // Optional: You can fallback to original logic later
-      setProduct(null);
     }
   }, [slug]);
 
@@ -58,31 +57,40 @@ const ProductSrcDetail = () => {
             <div className="relative aspect-square overflow-hidden rounded-3xl bg-muted shadow-card">
               <AnimatePresence mode="wait">
                 <motion.img
-                  key={0}
-                  src={product.images[0]}
-                  alt={product.name}
+                  key={activeImg}
+                  src={product.images[activeImg]}
+                  alt={`${product.name} view ${activeImg + 1}`}
                   initial={{ opacity: 0, scale: 1.03 }}
                   animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ duration: 0.35 }}
                   className="absolute inset-0 h-full w-full object-cover"
                 />
               </AnimatePresence>
             </div>
 
-            {/* Thumbnail Gallery */}
-            <div className="mt-4 grid grid-cols-3 gap-3">
-              {product.images.map((img, i) => (
-                <div
-                  key={i}
-                  className="overflow-hidden rounded-2xl border-2 border-transparent opacity-70 hover:opacity-100 transition-all cursor-pointer"
-                >
-                  <img
-                    src={img}
-                    alt=""
-                    className="aspect-square h-full w-full object-cover"
-                  />
-                </div>
-              ))}
-            </div>
+            {/* Thumbnails */}
+            {product.images.length > 1 && (
+              <div className="mt-4 grid grid-cols-4 gap-3">
+                {product.images.map((img, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setActiveImg(i)}
+                    className={`overflow-hidden rounded-2xl border-2 transition-all ${
+                      activeImg === i
+                        ? "border-primary shadow-soft"
+                        : "border-transparent opacity-70 hover:opacity-100"
+                    }`}
+                  >
+                    <img
+                      src={img}
+                      alt=""
+                      className="aspect-square h-full w-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Details */}
@@ -105,15 +113,14 @@ const ProductSrcDetail = () => {
                 Available at our KNUST SRC Week Stand
               </p>
               <p className="mt-2 text-sm text-muted-foreground">
-                Come visit us to purchase this cake. We look forward to serving you!
+                Come visit our stand to purchase this beautiful cake. We can't wait to serve you!
               </p>
             </div>
 
-            {/* Optional Extra Info */}
             {product.shortDesc && (
               <div className="mt-8">
-                <h3 className="font-medium text-foreground">Highlights</h3>
-                <p className="mt-2 text-muted-foreground">{product.shortDesc}</p>
+                <h3 className="font-medium text-foreground mb-2">Highlights</h3>
+                <p className="text-muted-foreground">{product.shortDesc}</p>
               </div>
             )}
           </div>
@@ -125,4 +132,4 @@ const ProductSrcDetail = () => {
   );
 };
 
-export default ProductSrcDetail;
+export default ProductDetail;
