@@ -169,7 +169,7 @@ const Checkout = () => {
          <p className="mt-4 rounded-xl  px-4 py-3 text-sm text-destructive">
             !!! Please  take note, we dont take orders on Sundays.
           </p>
-         <p className=" mt-1 rounded-xl  px-4 py-3 text-sm text-destructive md:max-w-1/2">
+         <p className="rounded-xl  px-4 py-3 text-sm text-destructive md:max-w-1/2">
             !!! Delivery comes with an extra cost.
           </p>
 
