@@ -166,10 +166,10 @@ const Checkout = () => {
 
         <h1 className="mt-4 font-serif text-3xl text-foreground sm:text-4xl">Checkout</h1>
 
-         <p className="mt-4 rounded-xl  px-4 py-3 text-sm text-destructive">
+         <p className="mt-4 rounded-xl  px-4 py-1 text-sm text-destructive">
             !!! Please  take note, we dont take orders on Sundays.
           </p>
-         <p className="mt-0 rounded-xl  px-4 py-3 text-sm text-destructive border border-red-500">
+         <p className="mt-0 rounded-xl  px-4 py-1 text-sm text-destructiv">
             !!! Delivery comes with an extra cost.
           </p>
 
