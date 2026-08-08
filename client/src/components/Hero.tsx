@@ -16,11 +16,14 @@ const Hero = () => {
           className="text-center lg:text-left"
         >
           <div className='flex flex-col items-center md:items-start md:flex-row space-y-2 md:space-y-0 md:space-x-2'>
-            <span className="inline-flex items-center gap-2 rounded-full bg-card/80 px-4 py-1.5 text-xs font-medium text-primary shadow-sm backdrop-blur">
+            {/* <span className="inline-flex items-center gap-2 rounded-full bg-card/80 px-4 py-1.5 text-xs font-medium text-primary shadow-sm backdrop-blur">
             <Sparkles className="h-3.5 w-3.5" /> Pre-Order Only!
           </span>
-          <p className="inline-flex items-center gap-2 rounded-full bg-card/80 px-4 py-1.5 text-xs font-medium text-primary shadow-sm backdrop-blur">
+           <p className="inline-flex items-center gap-2 rounded-full bg-card/80 px-4 py-1.5 text-xs font-medium text-primary shadow-sm backdrop-blur">
             <Megaphone className="h-3.5 w-3.5" /> Kindly take note, delivery goes out after 5pm!
+          </p> */}
+          <p className="inline-flex items-center gap-2 rounded-full bg-card/80 px-4 py-1.5 text-xs font-medium text-primary shadow-sm backdrop-blur">
+            <Megaphone className="h-3.5 w-3.5" /> We are officially closed for the semester. Thank you for your support and patronage. See you next semester.
           </p>
           </div>
           
