@@ -269,14 +269,14 @@ const Checkout = () => {
               </p>
             </div>
 
-            <button
+            {/* <button
               type="submit"
               disabled={submitStatus === 'loading'}
               className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-full bg-gradient-primary text-base font-semibold text-primary-foreground shadow-soft transition-transform hover:scale-[1.02] disabled:opacity-70"
             >
               <Lock className="h-4 w-4" />
               {submitStatus === 'loading' ? "Processing…" : `Pay Now • ${formatPesewas(total)}`}
-            </button>
+            </button> */}
           </motion.form>
 
           {/* Order Summary */}
