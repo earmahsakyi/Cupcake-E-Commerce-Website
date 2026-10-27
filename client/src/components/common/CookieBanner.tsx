@@ -1,5 +1,4 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Link } from "react-router-dom";
 import { ShieldCheck } from "lucide-react";
 import useCookieConsent from '@/hooks/useCookieConsent';
 import { Button } from "../ui/button";
