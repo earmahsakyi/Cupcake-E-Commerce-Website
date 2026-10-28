@@ -22,9 +22,7 @@ const Hero = () => {
             <span className="inline-flex items-center gap-2 rounded-full bg-card/80 px-4 py-1.5 text-xs font-medium text-primary shadow-sm backdrop-blur">
               <Megaphone className="h-3.5 w-3.5" /> Deliveries dispatch after 5:00 PM
             </span>
-            <span className="inline-flex items-center gap-2 rounded-full bg-card/80 px-4 py-1.5 text-xs font-medium text-muted-foreground shadow-sm backdrop-blur">
-              <MapPin className="h-3.5 w-3.5 text-primary" /> Ayeduase, near KNUST, Kumasi
-            </span>
+            
           </div>
 
           <h1 className="mt-5 font-serif text-4xl leading-[1.1] text-foreground sm:text-5xl lg:text-6xl">
