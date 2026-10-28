@@ -3,8 +3,8 @@ import { Star } from "lucide-react";
 
 const reviews = [
   {
-    name: "Alexandra  Yeboah",
-    role: "Birthday celebrant, Accra",
+    name: "Alexandra Yeboah",
+    role: "Birthday celebrant, Kumasi",
     quote: "My birthday cake was a dream, gorgeous and even more delicious. Cup O' Cake made my day unforgettable!",
     initial: "A",
   },
@@ -33,7 +33,7 @@ const Testimonials = () => {
           transition={{ duration: 0.6 }}
           className="mx-auto max-w-2xl text-center"
         >
-          <span className="text-sm font-medium uppercase tracking-widest text-primary">Loved by 500+ customers</span>
+          <span className="text-sm font-medium uppercase tracking-widest text-primary">Customer Love & Feedback</span>
           <h2 className="mt-3 font-serif text-3xl text-foreground sm:text-4xl lg:text-5xl">
             Sweet words from sweet people
           </h2>

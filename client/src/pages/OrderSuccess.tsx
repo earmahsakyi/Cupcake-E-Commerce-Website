@@ -16,7 +16,7 @@ const OrderSuccess = () => {
   const { currentOrder, fetchStatus, error } = useAppSelector(state => state.orders);
 
   useEffect(()=> {
-    document.title = "Order Confirmed | CupOcake";
+    document.title = "Order Confirmed | Cup O' Cake";
     if(orderId) dispatch(fetchOrderById(orderId))
   },[orderId, dispatch])
 

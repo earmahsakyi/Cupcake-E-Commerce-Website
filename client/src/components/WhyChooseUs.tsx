@@ -2,9 +2,9 @@ import { motion } from "framer-motion";
 import { Leaf, Palette, Truck, HeartHandshake } from "lucide-react";
 
 const features = [
-  { icon: Leaf, title: "Fresh Ingredients", desc: "Locally sourced, premium quality, baked the same day." },
-  { icon: Palette, title: "Custom Designs", desc: "Tell us your vision. We'll bring it to life in frosting." },
-  { icon: Truck, title: "Fast Delivery", desc: "Same-day delivery across Kumasi and major Ghanaian cities." },
+  { icon: Leaf, title: "Fresh Ingredients", desc: "Premium quality ingredients, freshly baked to order." },
+  { icon: Palette, title: "Custom Designs", desc: "Tell us your vision. We'll bring it to life in delicious frosting." },
+  { icon: Truck, title: "Local Delivery", desc: "Scheduled courier delivery across Ayeduase, KNUST and Kumasi." },
   { icon: HeartHandshake, title: "Affordable Pricing", desc: "Premium quality at prices that suit every celebration." },
 ];
 

@@ -31,6 +31,7 @@ const Navbar = () => {
           <a href={link("cakes")} className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Cakes</a>
           <a href={link("why")} className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Why us</a>
           <a href={link("reviews")} className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Reviews</a>
+          <Link to="/faq" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">FAQ</Link>
           <Link to="/cart" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Cart</Link>
           <Button variant="default" size="sm" asChild>
           <Link to="/admin/login">Staff login</Link>
@@ -61,6 +62,7 @@ const Navbar = () => {
             <a href={link("cakes")} onClick={()=> setIsOpen(false)} className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Cakes</a>
             <a href={link("why")} onClick={()=> setIsOpen(false)} className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Why us</a>
           <a href={link("reviews")} onClick={()=> setIsOpen(false)} className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Reviews</a>
+          <Link to="/faq" onClick={()=> setIsOpen(false)} className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">FAQ</Link>
           <Link to="/cart" onClick={()=> setIsOpen(false)} className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Cart</Link>
           <Button variant="default" size="sm" asChild>
           <Link to="/admin/login">Staff login</Link>

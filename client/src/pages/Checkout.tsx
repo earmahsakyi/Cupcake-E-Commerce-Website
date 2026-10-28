@@ -1,7 +1,7 @@
 import { FormEvent, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, CreditCard, Lock } from "lucide-react";
+import { ArrowLeft, CreditCard, Lock, AlertCircle, Truck } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useCart } from "@/context/CartContext";
@@ -166,12 +166,16 @@ const Checkout = () => {
 
         <h1 className="mt-4 font-serif text-3xl text-foreground sm:text-4xl">Checkout</h1>
 
-         <p className="mt-4 rounded-xl  px-4 py-1 text-sm text-destructive">
-            !!! Please  take note, we dont take orders on Sundays.
-          </p>
-         <p className="rounded-xl  px-4 py-1 text-sm text-destructive ">
-            !!! Delivery comes with an extra cost.
-          </p>
+        <div className="mt-4 space-y-2">
+          <div className="flex items-start gap-2.5 rounded-2xl bg-destructive/10 px-4 py-3 text-xs sm:text-sm text-destructive">
+            <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
+            <span><strong>Please note:</strong> We do not take same-day orders on Sundays. All Sunday deliveries must be pre-ordered by Saturday.</span>
+          </div>
+          <div className="flex items-start gap-2.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 px-4 py-3 text-xs sm:text-sm text-amber-900">
+            <Truck className="h-4 w-4 shrink-0 mt-0.5 text-amber-700" />
+            <span><strong>Delivery Notice:</strong> The total below covers your freshly baked items. Local delivery across Ayeduase, KNUST and Kumasi comes with an extra delivery fee confirmed prior to dispatch per our <Link to="/delivery-policy" target="_blank" className="font-semibold underline underline-offset-2">Delivery Policy</Link>.</span>
+          </div>
+        </div>
 
         {error && (
           <p className="mt-4 rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">
@@ -268,6 +272,22 @@ const Checkout = () => {
                 You will be redirected to complete payment via Mobile Money after placing order.
               </p>
             </div>
+
+            <p className="text-center text-xs text-muted-foreground px-2">
+              By proceeding with payment, you agree to our{" "}
+              <Link to="/terms-of-service" target="_blank" className="text-primary font-medium underline underline-offset-2">
+                Terms of Service
+              </Link>
+              ,{" "}
+              <Link to="/delivery-policy" target="_blank" className="text-primary font-medium underline underline-offset-2">
+                Delivery Policy
+              </Link>
+              , and{" "}
+              <Link to="/refund-policy" target="_blank" className="text-primary font-medium underline underline-offset-2">
+                Refund Policy
+              </Link>
+              .
+            </p>
 
             <button
               type="submit"

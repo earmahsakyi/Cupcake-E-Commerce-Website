@@ -12,6 +12,10 @@ import Cart from "./pages/Cart.tsx";
 import Checkout from "./pages/Checkout.tsx";
 import OrderSuccess from "./pages/OrderSuccess.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import FAQ from "./pages/FAQ.tsx";
+import DeliveryPolicy from "./pages/DeliveryPolicy.tsx";
+import TermsOfService from "./pages/TermsOfService.tsx";
+import RefundPolicy from "./pages/RefundPolicy.tsx";
 import { useEffect } from "react";
 import { useAppDispatch } from "@/store/index";
 import { loadAdmin } from "@/store/slices/adminAuthSlice";
@@ -54,7 +58,15 @@ const AppInit = () => {
     dispatch(loadAdmin());
   }, [dispatch]);
   return null;
-}
+};
+
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -63,6 +75,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
       <AppInit/>
+      <ScrollToTop />
        
           <CartProvider>
             <AnimatePresence mode='wait'>
@@ -72,6 +85,10 @@ const App = () => (
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/order-success" element={<OrderSuccess />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/delivery-policy" element={<DeliveryPolicy />} />
+              <Route path="/terms-of-service" element={<TermsOfService />} />
+              <Route path="/refund-policy" element={<RefundPolicy />} />
 
               {/* Admin auth */}
               <Route path="/admin/login" element={<Login />} />

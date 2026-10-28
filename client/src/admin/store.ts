@@ -140,7 +140,7 @@ export const ordersStore = {
       if (o) smsStore.add({
         orderId: id,
         phone: o.customer.phone,
-        message: `Hi ${o.customer.name}, your Sweet Crumbs order ${id} is out for delivery!`,
+        message: `Hi ${o.customer.name}, your Cup O' Cake order ${id} is out for delivery!`,
         trigger: "out_for_delivery",
       });
     }
