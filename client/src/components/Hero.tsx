@@ -37,7 +37,7 @@ const Hero = () => {
           </p>
 
           <p className="mt-3 text-xs leading-normal text-muted-foreground/90 max-w-lg mx-auto lg:mx-0">
-            We are based in Ayeduase, near KNUST, Kumasi, Ghana. Please contact us to confirm product availability, custom cake arrangements and delivery availability for your location.
+            We are based in Ayeduase, KNUST, Kumasi, Ghana. Please contact us to confirm product availability, custom cake arrangements and delivery availability for your location.
           </p>
 
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row lg:justify-start">

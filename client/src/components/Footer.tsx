@@ -132,7 +132,7 @@ const Footer = () => {
                 <span>
                   Evandy Hostel (Annex), Ayeduase
                   <br />
-                  Near KNUST, Kumasi, Ghana
+                 KNUST, Kumasi, Ghana
                 </span>
               </li>
             </ul>
@@ -143,7 +143,7 @@ const Footer = () => {
             <h4 className="font-serif text-base font-semibold text-foreground">Operating Schedule</h4>
             <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
               <li className="flex items-center gap-2 font-medium text-foreground">
-                <Clock className="h-4 w-4 text-primary" /> Tuesday – Sunday
+                <Clock className="h-4 w-4 text-primary" /> Monday - Sunday
               </li>
               <li className="text-xs">Mondays: Closed for kitchen prep</li>
               <li className="mt-3 rounded-2xl bg-card p-3 border border-border/60 text-xs">
