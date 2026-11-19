@@ -31,7 +31,11 @@ export const createOrder = asyncHandler(
 
         //creating validatedItem array to add each price
         const validatedItems = [];
+        const PAYMENT_FEE_RATE = 0.0195;
         let totalPesewas = 0; 
+        let amountBeforeRounding = 0;
+        let amountChargedPesewas = 0;
+        
 
         for (const item of items){
             let unit_price_pesewas;
@@ -96,6 +100,9 @@ export const createOrder = asyncHandler(
             validatedItems.push({...item, unit_price_pesewas});    
         }
 
+        amountBeforeRounding = totalPesewas / (1 - PAYMENT_FEE_RATE);
+        amountChargedPesewas = Math.ceil(amountBeforeRounding);
+
         const connection = await pool.getConnection();
         await connection.beginTransaction();
         
@@ -142,7 +149,7 @@ export const createOrder = asyncHandler(
             const paystackProvider = mapToPaystackProvider(momo_network);
             const url = 'https://api.paystack.co/charge';
             const content = {
-                'amount': totalPesewas,
+                'amount': amountChargedPesewas,
                 'email' : `${normalisedPhone}@placeholder.com`,
                 'currency': 'GHS',
                 'mobile_money': {
