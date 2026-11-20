@@ -18,9 +18,51 @@ import {
 import { toast } from "sonner";
 
 const SMS_TEMPLATES = [
-  { label: "Order confirmation", text: (name: string, reference: string) => `Hi ${name}, thanks for your order with reference ${reference} ! We're preparing it with love. — Cup O' Cake` },
-  { label: "Delivery on the way", text: (name: string, reference: string) => `Hi ${name}, your order with reference ${reference}  is on the way! Please be available to receive it. — Cup O' Cake` },
-  { label: "Delivered confirmation", text: (name: string, reference: string) => `Hi ${name}, we hope you enjoy your cake! Order with reference ${reference}. Please rate us. — Cup O' Cake` },
+  {
+    label: "Order confirmation",
+    text: (name: string, reference: string) =>
+      `Hi ${name}, thanks for your order with reference ${reference}! We're preparing it with love. — Cup O' Cake`,
+  },
+  {
+    label: "Payment confirmation",
+    text: (name: string, reference: string) =>
+      `Hi ${name}, your payment for order ${reference} has been received successfully. Thank you for choosing Cup O' Cake!`,
+  },
+  {
+    label: "Order preparation",
+    text: (name: string, reference: string) =>
+      `Hi ${name}, your order ${reference} is now being prepared. We can't wait for you to enjoy it! — Cup O' Cake`,
+  },
+  {
+    label: "Order ready",
+    text: (name: string, reference: string) =>
+      `Hi ${name}, your order ${reference} is ready for pickup or delivery. Please contact us if needed. — Cup O' Cake`,
+  },
+  {
+    label: "Delivery on the way",
+    text: (name: string, reference: string) =>
+      `Hi ${name}, your order ${reference} is on the way! Please be available to receive it. — Cup O' Cake`,
+  },
+  {
+    label: "Delivery delay",
+    text: (name: string, reference: string) =>
+      `Hi ${name}, we're sorry but your order ${reference} may be delayed. We appreciate your patience and will keep you updated. — Cup O' Cake`,
+  },
+  {
+    label: "Delivered confirmation",
+    text: (name: string, reference: string) =>
+      `Hi ${name}, your order ${reference} has been delivered. We hope you enjoy every bite! Thank you for choosing Cup O' Cake.`,
+  },
+  {
+    label: "Feedback request",
+    text: (name: string, reference: string) =>
+      `Hi ${name}, we hope you enjoyed your order ${reference}! We'd love to hear your feedback. Thank you for choosing Cup O' Cake. — Cup O' Cake`,
+  },
+  {
+    label: "Order cancellation",
+    text: (name: string, reference: string) =>
+      `Hi ${name}, we're sorry to inform you that order ${reference} has been cancelled. Please contact us if you have any questions. — Cup O' Cake`,
+  },
 ];
 
 const STATUSES: OrderStatus[] = ["pending", "paid", "processing", "delivered", "cancelled"];
