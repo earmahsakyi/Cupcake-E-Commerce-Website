@@ -23,7 +23,7 @@ const sizeDisplayMap: Record<string, string> = {
   signature: 'Signature Cube',
   medium: 'Deluxe',
   large: 'Elite',
-  super: 'Super-Elite Bowl'
+  'super-elite': 'Super-Elite Bowl'
 };
 
 const ProductDetail = () => {
