@@ -15,7 +15,7 @@ const sizeImageMap: Record<string, number> = {
   signature: 1,
   medium: 2,
   large: 3,
-  super: 4,
+  'super-elite': 4,
 };
 
 const sizeDisplayMap: Record<string, string> = {
