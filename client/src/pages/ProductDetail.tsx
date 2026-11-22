@@ -308,7 +308,7 @@ const ProductDetail = () => {
                           }`}
                         >
                           <input
-                            type="checkbox"
+                            type="radio"
                             value={f}
                             checked={selectedFlavors.includes(f)}
                             onChange={() => {
