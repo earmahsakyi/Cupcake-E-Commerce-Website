@@ -298,22 +298,31 @@ const ProductDetail = () => {
                     <p className="text-sm font-semibold text-foreground mb-2">Flavor</p>
                     <div className="flex flex-wrap gap-2">
                       {product.flavors.map((f) => (
-                        <input
+                        <>
+                        <label
                           key={f}
-                          type='radio'
-                          onClick={() => {
-                            setSelectedFlavors((prev) =>
-                              prev.includes(f) ? prev.filter((fl) => fl !== f) : [...prev, f]
-                            );
-                          }}
-                          className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+                          className={`flex cursor-pointer items-center justify-center rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
                             selectedFlavors.includes(f)
                               ? "border-primary bg-primary-soft text-primary"
                               : "border-border bg-card hover:border-primary"
                           }`}
-                          value={f}
-                        />
-                       
+                        >
+                          <input
+                            type="checkbox"
+                            value={f}
+                            checked={selectedFlavors.includes(f)}
+                            onChange={() => {
+                              setSelectedFlavors((prev) =>
+                                prev.includes(f)
+                                  ? prev.filter((fl) => fl !== f)
+                                  : [...prev, f]
+                              );
+                            }}
+                            className="sr-only"
+                          />
+                          {f}
+                        </label>
+                                              </> 
                       ))}
                     </div>
                   </div>
