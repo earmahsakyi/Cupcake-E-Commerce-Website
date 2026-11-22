@@ -300,13 +300,10 @@ const ProductDetail = () => {
                       {product.flavors.map((f) => (
                         <input
                           key={f}
-                          type="checkbox"
-                          checked={selectedFlavors.includes(f)}
-                          onChange={() => {
+                          type='radio'
+                          onClick={() => {
                             setSelectedFlavors((prev) =>
-                              prev.includes(f)
-                                ? prev.filter((fl) => fl !== f)
-                                : [...prev, f]
+                              prev.includes(f) ? prev.filter((fl) => fl !== f) : [...prev, f]
                             );
                           }}
                           className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
@@ -314,7 +311,9 @@ const ProductDetail = () => {
                               ? "border-primary bg-primary-soft text-primary"
                               : "border-border bg-card hover:border-primary"
                           }`}
+                          value={f}
                         />
+                       
                       ))}
                     </div>
                   </div>
