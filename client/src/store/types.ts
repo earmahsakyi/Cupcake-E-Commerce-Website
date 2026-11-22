@@ -16,6 +16,7 @@ export interface Product {
   variants: ProductVariant[];
   box_slot_count: number | null;
   box_price_pesewas: number | null;
+  foil_price_pesewas: number | null;
   is_active: boolean;
 }
 

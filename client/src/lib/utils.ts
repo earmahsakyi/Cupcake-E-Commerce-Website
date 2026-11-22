@@ -58,5 +58,6 @@ export const formatPesewas = (pesewas: number): string => {
   };
 
   if (product.box_price_pesewas) return product.box_price_pesewas;
+  if (product.foil_price_pesewas) return product.foil_price_pesewas;
   return 0;
 };
