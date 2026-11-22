@@ -129,6 +129,12 @@ const ProductDetail = () => {
         flavor_note: flavorNote.trim() || undefined,
       };
     }
+    else if (product.product_type === 'foil') {
+      cartItem = {
+        ...cartItem,
+        selected_flavors: selectedFlavors.length > 0 ? selectedFlavors : undefined,
+      };
+    }
 
     addItem(cartItem);
     setAdded(true);
@@ -281,6 +287,38 @@ const ProductDetail = () => {
                     className="w-full rounded-xl border border-border bg-card p-3 text-sm min-h-[80px] resize-y"
                   />
                 </div>
+              </>
+            )}
+
+            {/* FOIL OPTIONS */}
+            {product.product_type === 'foil' && (
+              <>
+                {product.flavors.length > 0 && (
+                  <div className="mt-5">
+                    <p className="text-sm font-semibold text-foreground mb-2">Flavor</p>
+                    <div className="flex flex-wrap gap-2">
+                      {product.flavors.map((f) => (
+                        <button
+                          key={f}
+                          onClick={() => {
+                            setSelectedFlavors((prev) =>
+                              prev.includes(f) ? prev.filter((fl) => fl !== f) : [...prev, f]
+                            );
+                          }}
+                          className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+                            selectedFlavors.includes(f)
+                              ? "border-primary bg-primary-soft text-primary"
+                              : "border-border bg-card hover:border-primary"
+                          }`}
+                        >
+                          {f}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+          
               </>
             )}
 
