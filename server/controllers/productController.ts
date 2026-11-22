@@ -12,7 +12,7 @@ export const getAllProducts = asyncHandler(
             `SELECT id, name, slug, short_desc, description, product_type, is_active
             FROM products
             WHERE is_active = 1
-            ORDER BY id ASC`
+            ORDER BY sort_order ASC`
         )
 
         if (!products.length){
