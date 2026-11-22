@@ -38,7 +38,7 @@ export const getAllProducts = asyncHandler(
             `SELECT id, product_id, slot_count, price_pesewas
             FROM box_configs`
         );
-        const [foiConfigs]: any = await pool.query(
+        const [foilConfigs]: any = await pool.query(
             `SELECT id, product_id, price_pesewas
             FROM Foil_configs`
         );
@@ -66,7 +66,7 @@ export const getAllProducts = asyncHandler(
             return map;
         },{});
 
-        const foilConfigMap: Record<number, any> =boxConfigs.reduce((map: any, row: any) => {
+        const foilConfigMap: Record<number, any> =foilConfigs.reduce((map: any, row: any) => {
             map[row.product_id] = {price_pesewas: row.price_pesewas}
             return map;
         },{});
