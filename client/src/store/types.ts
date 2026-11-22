@@ -1,6 +1,6 @@
 // ─── Product types 
 export interface ProductVariant {
-  size: "small" | "medium" | "large" | "signature";
+  size: "small" | "medium" | "large" | "signature" | "super-elite";
   price_pesewas: number;
 }
 
@@ -10,7 +10,7 @@ export interface Product {
   slug: string;
   short_desc: string;
   description: string;
-  product_type: "cupcake" | "box" | "custom_cake" | "other";
+  product_type: "cupcake" | "box" | "custom_cake" | "other" |"foil";
   images: string[];
   flavors: string[];
   variants: ProductVariant[];
@@ -33,7 +33,7 @@ export interface OrderItem {
   product_name: string;
   quantity: number;
   unit_price_pesewas: number;
-  size: "small" | "medium" | "large" | "signature" | null;
+  size: "small" | "medium" | "large" | "signature" | "super-elite" | null;
   flavor_note: string | null;
   selected_flavors: string[] | null;
   slot_flavors?: { slot_number: number; flavor: string }[] | null;
@@ -67,7 +67,7 @@ export interface CreateOrderPayload {
 export interface CartItemPayload {
   product_id: number;
   quantity: number;
-  size?: "small" | "medium" | "large" | "signature";
+  size?: "small" | "medium" | "large" | "signature" | "super-elite";
   selected_flavors?: string[];
   flavor_note?: string;
   slot_flavors?: { slot_number: number; flavor: string }[];
