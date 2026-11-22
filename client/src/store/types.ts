@@ -36,7 +36,7 @@ export interface OrderItem {
   unit_price_pesewas: number;
   size: "small" | "medium" | "large" | "signature" | "super-elite" | null;
   flavor_note: string | null;
-  selected_flavors: string | string[] | null;
+  selected_flavors: string[] | null;
   slot_flavors?: { slot_number: number; flavor: string }[] | null;
 }
 
@@ -69,7 +69,7 @@ export interface CartItemPayload {
   product_id: number;
   quantity: number;
   size?: "small" | "medium" | "large" | "signature" | "super-elite";
-  selected_flavors?: string[] | string;
+  selected_flavors?: string[] ;
   flavor_note?: string;
   slot_flavors?: { slot_number: number; flavor: string }[];
 }

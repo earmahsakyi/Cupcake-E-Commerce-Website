@@ -133,7 +133,7 @@ const ProductDetail = () => {
     else if (product.product_type === 'foil') {
       cartItem = {
         ...cartItem,
-        selected_flavors: selectedFlavor ?? null,
+        selected_flavors: selectedFlavor ? [selectedFlavor] : null,
       };
     }
 
