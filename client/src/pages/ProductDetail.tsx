@@ -15,6 +15,7 @@ const sizeImageMap: Record<string, number> = {
   signature: 1,
   medium: 2,
   large: 3,
+  super: 4,
 };
 
 const sizeDisplayMap: Record<string, string> = {
@@ -22,6 +23,7 @@ const sizeDisplayMap: Record<string, string> = {
   signature: 'Signature Cube',
   medium: 'Deluxe',
   large: 'Elite',
+  super: 'Super-Elite Bowl'
 };
 
 const ProductDetail = () => {
@@ -33,7 +35,7 @@ const ProductDetail = () => {
   const { addItem, openCart } = useCart();
 
   const [activeImg, setActiveImg] = useState(0);
-  const [size, setSize] = useState<'small' | 'medium' | 'large' | 'signature' | undefined>();
+  const [size, setSize] = useState<'small' | 'medium' | 'large' | 'signature' |'super-elite'| undefined>();
   const [selectedFlavors, setSelectedFlavors] = useState<string[]>([]);
   const [slotFlavors, setSlotFlavors] = useState<{ slot_number: number; flavor: string }[]>([]);
   const [flavorNote, setFlavorNote] = useState("");

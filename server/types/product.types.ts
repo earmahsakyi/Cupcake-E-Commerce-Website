@@ -10,7 +10,7 @@ export interface ProductRow {
     slug: string;
     short_desc: string;
     description: string;
-    product_type: 'cupcake' | 'box' | 'custom_cake' | 'other';
+    product_type: 'cupcake' | 'box' | 'custom_cake' | 'other'| 'foil';
     is_active: boolean;
     created_at: Date;
 }
@@ -18,7 +18,7 @@ export interface ProductRow {
 export interface CupcakeVariantRow {
     id: number;
     product_id: number;
-    size: 'small' | 'medium' | 'large' | 'signature';
+    size: 'small' | 'medium' | 'large' | 'signature' | 'super-elite';
     price_pesewas: number;
 }
 
@@ -44,7 +44,7 @@ export interface BoxConfigRow {
 
 //Api to the frontend
 export interface ProductVariant {
-    size: 'small' | 'medium' | 'large' | 'signature';
+    size: 'small' | 'medium' | 'large' | 'signature' | 'super-elite';
     price_pesewas: number;
 }
 
@@ -54,7 +54,7 @@ export interface Product {
     slug: string;
     short_desc: string;
     description: string;
-    product_type: 'cupcake' | 'box' | 'custom_cake' | 'other';
+    product_type: 'cupcake' | 'box' | 'custom_cake' | 'other' | 'foil';
     images: string[];
     flavors: string[];
     variants: ProductVariant[];
@@ -69,7 +69,7 @@ export interface CreateProductBody {
     slug: string;
     short_desc:string;
     description: string;
-    product_type: 'cupcake' | 'box' | 'custom_cake' | 'other';
+    product_type: 'cupcake' | 'box' | 'custom_cake' | 'other' | 'foil';
     images: string[];
     flavors: string[];
     variants?: ProductVariant[];
