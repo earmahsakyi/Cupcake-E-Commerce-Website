@@ -37,6 +37,7 @@ const ProductDetail = () => {
   const [activeImg, setActiveImg] = useState(0);
   const [size, setSize] = useState<'small' | 'medium' | 'large' | 'signature' |'super-elite'| undefined>();
   const [selectedFlavors, setSelectedFlavors] = useState<string[]>([]);
+  const [selectedFlavor, setSelectedFlavor] = useState("");
   const [slotFlavors, setSlotFlavors] = useState<{ slot_number: number; flavor: string }[]>([]);
   const [flavorNote, setFlavorNote] = useState("");
   const [qty, setQty] = useState(1);
@@ -132,7 +133,7 @@ const ProductDetail = () => {
     else if (product.product_type === 'foil') {
       cartItem = {
         ...cartItem,
-        selected_flavors: selectedFlavors.length > 0 ? selectedFlavors : undefined,
+        selected_flavors: selectedFlavor ?? null,
       };
     }
 
@@ -300,29 +301,25 @@ const ProductDetail = () => {
                       {product.flavors.map((f) => (
                         <>
                         <label
-                          key={f}
-                          className={`flex cursor-pointer items-center justify-center rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
-                            selectedFlavors.includes(f)
-                              ? "border-primary bg-primary-soft text-primary"
-                              : "border-border bg-card hover:border-primary"
-                          }`}
-                        >
-                          <input
-                            type="radio"
-                            value={f}
-                            checked={selectedFlavors.includes(f)}
-                            onChange={() => {
-                              setSelectedFlavors((prev) =>
-                                prev.includes(f)
-                                  ? prev.filter((fl) => fl !== f)
-                                  : [...prev, f]
-                              );
-                            }}
-                            className="sr-only"
-                          />
-                          {f}
-                        </label>
-                                              </> 
+                        key={f}
+                        className={`flex cursor-pointer items-center justify-center rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+                          selectedFlavor === f
+                            ? "border-primary bg-primary-soft text-primary"
+                            : "border-border bg-card hover:border-primary"
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="flavor"
+                          value={f}
+                          checked={selectedFlavor === f}
+                          onChange={() => setSelectedFlavor(f)}
+                          className="sr-only"
+                        />
+                        {f}
+                      </label>
+                        </>
+                                            
                       ))}
                     </div>
                   </div>
