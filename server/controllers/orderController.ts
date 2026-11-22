@@ -92,6 +92,23 @@ export const createOrder = asyncHandler(
                 unit_price_pesewas = box_config.price_pesewas;
             };
 
+            if(product.product_type === 'foil'){
+                const[foil_rows]: any = await pool.query(
+                    `SELECT price_pesewas 
+                    FROM Foil_configs
+                    WHERE product_id = ?`,
+                    [item.product_id]
+                );
+
+                if(!foil_rows.length){
+                    throw new AppError('Box config not found',404)
+                };
+
+                const foil_config = foil_rows[0];
+
+                unit_price_pesewas = foil_config.price_pesewas;
+            };
+
             if(product.product_type === 'custom_cake'){
                 unit_price_pesewas = 0;
             }

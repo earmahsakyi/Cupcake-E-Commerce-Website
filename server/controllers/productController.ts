@@ -38,6 +38,10 @@ export const getAllProducts = asyncHandler(
             `SELECT id, product_id, slot_count, price_pesewas
             FROM box_configs`
         );
+        const [foiConfigs]: any = await pool.query(
+            `SELECT id, product_id, price_pesewas
+            FROM Foil_configs`
+        );
 
         const [images]: any = await pool.query(
             `SELECT product_id, url
@@ -62,6 +66,11 @@ export const getAllProducts = asyncHandler(
             return map;
         },{});
 
+        const foilConfigMap: Record<number, any> =boxConfigs.reduce((map: any, row: any) => {
+            map[row.product_id] = {price_pesewas: row.price_pesewas}
+            return map;
+        },{});
+
         const imageMap: Record<number, string[]> = images.reduce((map: any, row: any) => {
             if (!map[row.product_id]) map[row.product_id] = [];
             map[row.product_id].push(row.url);
@@ -81,7 +90,8 @@ export const getAllProducts = asyncHandler(
             variants: variantMap[product.id] || [],
             flavors: flavorMap[product.id] || [],
             box_slot_count: boxConfigMap[product.id]?.slot_count ?? null,
-            box_price_pesewas: boxConfigMap[product.id]?.price_pesewas ?? null
+            box_price_pesewas: boxConfigMap[product.id]?.price_pesewas ?? null,
+            foil_price_pesewas: foilConfigMap[product.id]?.price_pesewas ?? null,
         }));
 
         res.status(200).json({success: true, data})
@@ -126,6 +136,12 @@ export const getProductById = asyncHandler(
             WHERE product_id = ?`,
             [id]
         );
+        const [foilConfigs]: any = await pool.query(
+            `SELECT price_pesewas
+            FROM Foil_configs
+            WHERE product_id = ?`,
+            [id]
+        );
 
         const [images]: any = await pool.query(
             `SELECT url
@@ -152,6 +168,7 @@ export const getProductById = asyncHandler(
                 flavors: flavors.map((f: any) => f.flavor_name),
                 box_slot_count: boxConfig?.slot_count ?? null,
                 box_price_pesewas: boxConfig?.price_pesewas ?? null,       
+                foil_price_pesewas: foilConfigs?.price_pesewas ?? null,       
             }
         })
 
