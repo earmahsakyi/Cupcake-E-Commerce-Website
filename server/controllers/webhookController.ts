@@ -82,15 +82,21 @@ export const webhook = asyncHandler(
         const old_amount = Number((order.total_pesewas / 100).toFixed(2))
         await sendOrderConfirmationSMS(order.customer_phone, Number(order.total_pesewas), order.customer_name, reference);
         const message = `New order ${reference} from ${order.customer_name} for GH₵${old_amount}. Please check your dashboard for details.`
-        await sendRawSMS('0502135186', message)
+        const number = process.env.MAIN_PHONE!;
+        await sendRawSMS(number, message)
 
         // Auto-log the SMS that was just sent
         try {
             const smsMessage = `Hi ${order.customer_name}, your payment for order ${reference} was successful. We'll start preparing your order. Cup O' Cake`;
             await pool.execute(
                 `INSERT INTO sms_logs (order_id, phone, message, trigger_type, sent_at)
-                 VALUES (?, ?, ?, 'payment', NOW())`,
-                [order.id, order.customer_phone, smsMessage]
+                 VALUES (?, ?, ?, 'payment', NOW()),
+                 (?, ?, ?, 'manual', NOW())`,
+                [
+                    order.id, order.customer_phone, smsMessage,
+                    order.id, number, message
+
+                ]
             );
         } catch (smsLogErr) {
             // Don't fail the webhook if logging fails — just log the error
