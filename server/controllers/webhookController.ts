@@ -3,8 +3,9 @@ import { Request, Response } from "express";
 import { asyncHandler } from "../middleware/asyncHandler.js";
 import crypto from 'crypto';
 import { AppError } from "../middleware/errorHandler.js";
-import { sendOrderConfirmationSMS } from "../utils/sms.js";
+import { sendOrderConfirmationSMS,sendRawSMS } from "../utils/sms.js";
 import sendEmail from "../utils/sendEmail.js";
+import { normalisePhone } from "../utils/helper.js";
 
 export const webhook = asyncHandler(
     async(req: Request, res: Response) => {
@@ -31,7 +32,7 @@ export const webhook = asyncHandler(
         const { reference, amount } = event.data;
 
         const [results]: any = await pool.query(
-            `SELECT id, customer_name, customer_phone 
+            `SELECT id, customer_name, customer_phone, total_pesewas 
             FROM orders
             WHERE reference = ?`,
             [reference]
@@ -76,8 +77,12 @@ export const webhook = asyncHandler(
         [reference]
     );
 
-   
-        await sendOrderConfirmationSMS(order.customer_phone, amount, order.customer_name, reference);
+      
+
+        const old_amount = Number((order.total_pesewas / 100).toFixed(2))
+        await sendOrderConfirmationSMS(order.customer_phone, Number(order.total_pesewas), order.customer_name, reference);
+        const message = `New order ${reference} from ${order.customer_name} for GH₵${old_amount}. Please check your dashboard for details.`
+        await sendRawSMS('0502135186', message)
 
         // Auto-log the SMS that was just sent
         try {

@@ -43,9 +43,9 @@ export const sendOrderConfirmationSMS = async (
   }
 };
 
-export const sendRawSMS = async (phone: string, message: string): Promise<void> => {
+export const sendRawSMS = async (phone: string, message: string,): Promise<void> => {
     try {
-        // ✅ Strip spaces, dashes, plus signs first
+        //  Strip spaces, dashes, plus signs first
         const cleaned = phone.replace(/[\s\-\+]/g, '');
 
         const formatted = cleaned.startsWith('0')
